@@ -112,7 +112,13 @@ def parse_md_table(raw, src):
         parts = [re.sub(r"\[|\]", "", p).strip() for p in line.split("|")]
         parts = [p for p in parts if p]
         name = parts[0] if parts else urls[0]
-        out[urls[0]] = entry(name, urls[0], " :: ".join(parts[1:4]))
+        # Key by the URL's last path segment (the offer slug) when it has
+        # one: stable across cosmetic URL changes and matches how the
+        # curated lists name their detail pages.
+        seg = urls[0].rstrip("/").split("/")[-1]
+        key = seg if seg and not re.search(r"\.(html?|json|md|xml)$", seg) \
+            else urls[0]
+        out[key] = entry(name, urls[0], " :: ".join(parts[1:4]))
     return out
 
 

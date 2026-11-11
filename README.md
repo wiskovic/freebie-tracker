@@ -87,6 +87,8 @@ state/                  runtime snapshots and diffs (git-ignored)
 
 Any agent that can run a shell command on a schedule can operate this: run the puller, read `state/last-run.json`, and wake the reasoning agent only when `wake_new_count + wake_changed_count > 0`. The puller itself needs no credentials and makes no LLM calls, so the standing cost of the radar is effectively zero.
 
+**Production status:** the reference deployment runs this exact code. Its agent polls every 6 hours from a checkout of this repository, keeps its snapshots and owner inventory in a private deployment folder outside git, and reports finds to its owner. Changes here are tested against the live snapshots before they ship.
+
 ## Disclaimer
 
 Everything this tool surfaces is an unverified lead until an agent (or the owner) checks the official provider page. Offers change, expire and get region-locked without notice. Never enter credentials, codes or payment data anywhere except the provider's own site, and only on the owner's explicit instruction.
