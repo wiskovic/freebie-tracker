@@ -18,6 +18,9 @@ Design notes (learned in production):
   diffed and stored but never wake the agent alone (token economy).
 - One failing source never kills a run. Failures are listed in the
   summary and in the diff's "errors".
+- An empty parse counts as a failure, never as "everything was
+  removed": the previous snapshot is kept, so a source that changes
+  its format cannot burn the baseline or fire a false wake.
 - A first run (or --seed) only writes baselines and reports no diff.
 - HTTP 429 gets one retry after 20 s (some readers rate-limit hard).
 
@@ -250,6 +253,16 @@ def main():
             current = parser(fetch(src["url"]), src)
         except Exception as e:  # one bad source never kills the run
             diff["errors"].append({"source": sid, "error": str(e)[:200]})
+            continue
+        if not current:
+            # An empty parse almost always means the source changed its
+            # format or served a block page, not that every offer died.
+            # Treat it as a failure and KEEP the old snapshot: recording
+            # hundreds of fake removals would burn the baseline and fire
+            # a false wake.
+            diff["errors"].append({
+                "source": sid,
+                "error": "empty parse; previous snapshot kept"})
             continue
         if src.get("tier") != "curated" and len(current) > MAX_FEED_ITEMS:
             current = dict(list(current.items())[:MAX_FEED_ITEMS])

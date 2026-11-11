@@ -14,11 +14,15 @@ The machine registry is `sources.json`; this file is the human-readable version,
 - **LINUX DO welfare** (CN): the freebie section of a large developer community, read via the Jina reader. Giveaways, credit drops and trial announcements surface here early.
 - **V2EX promotions** (CN): promotions board RSS. Mixed quality; relays, carpools and resales are common and fail the filter.
 - **GeekNews** (KR): Korean developer news. Government support calls, AI subsidy announcements and startup credit programs surface here in Korean before they are picked up in English.
+- **LowEndTalk offers** (global): the offers category of the Western hosting community. Provider giveaways land here, including a verified catch of 100 free one-year VPS from a RackNerd/AdminBolt thread.
 
 ## Machine feeds, firehose (never wake alone)
 
 - **NodeSeek** (CN, hosting community): mostly marketplace buying and selling. Useful context on wake, useless as a trigger.
 - **Appinn, ghxi, iPlaySoft** (CN software blogs): software deals and license giveaways, read on wake.
+- **Slickdeals** (US) and **OzBargain** (AU): large consumer deals communities. Mostly consumer offers, with the occasional software or hosting gem; read on wake.
+
+Checked and not machine-pullable from a typical datacenter egress: Reddit (403 to bots) and HostLoc (RSS endpoint closed). Both stay agent-leg candidates via browser, not feeds.
 
 ## Agent-checked pages, government programs
 
