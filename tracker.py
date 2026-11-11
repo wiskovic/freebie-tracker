@@ -21,6 +21,9 @@ Design notes (learned in production):
 - An empty parse counts as a failure, never as "everything was
   removed": the previous snapshot is kept, so a source that changes
   its format cannot burn the baseline or fire a false wake.
+- Responses are capped at 8 MB, snapshots and state files are written
+  atomically (temp file plus rename), and sources are fetched in
+  parallel so a full run stays fast even when a few sources hang.
 - A first run (or --seed) only writes baselines and reports no diff.
 - HTTP 429 gets one retry after 20 s (some readers rate-limit hard).
 
@@ -33,18 +36,22 @@ Usage:
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 import time
 import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent
 UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 MAX_FEED_ITEMS = 120  # cap per feed source; curated lists are exempt
+MAX_BYTES = 8 * 1024 * 1024  # refuse absurdly large responses
+FETCH_WORKERS = 6  # sources are fetched and parsed in parallel
 
 # Keyword map from a markdown-list section title to a category.
 SECTION_CATEGORY = [
@@ -65,12 +72,23 @@ def fetch(url, timeout=25):
         req = urllib.request.Request(url, headers={"User-Agent": UA})
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
-                return r.read()
+                data = r.read(MAX_BYTES + 1)
+            if len(data) > MAX_BYTES:
+                raise ValueError(f"response over {MAX_BYTES} bytes")
+            return data
         except urllib.error.HTTPError as e:
             if e.code == 429 and attempt == 1:
                 time.sleep(20)
                 continue
             raise
+
+
+def write_json_atomic(path, obj):
+    """Write JSON via a temp file plus rename, so a process killed
+    mid-write can never leave a corrupt snapshot behind."""
+    tmp = path.with_name(path.name + f".tmp-{os.getpid()}")
+    tmp.write_text(json.dumps(obj, ensure_ascii=False, indent=1))
+    os.replace(tmp, path)
 
 
 def entry(title, link="", extra=""):
@@ -239,20 +257,28 @@ def main():
 
     diff = {"new": [], "changed": [], "removed": [], "errors": []}
     totals = {}
-    wake_ids = set()
-    for src in sources:
-        sid = src["id"]
-        if src.get("wake"):
-            wake_ids.add(sid)
+    wake_ids = {s["id"] for s in sources if s.get("wake")}
+
+    def pull_one(src):
+        """Fetch and parse one source; return (src, entries, error)."""
         parser = PARSERS.get(src.get("format", ""))
         if parser is None:
-            diff["errors"].append({"source": sid,
-                                   "error": "unknown format"})
-            continue
+            return src, None, "unknown format"
         try:
-            current = parser(fetch(src["url"]), src)
+            return src, parser(fetch(src["url"]), src), None
         except Exception as e:  # one bad source never kills the run
-            diff["errors"].append({"source": sid, "error": str(e)[:200]})
+            return src, None, str(e)[:200]
+
+    # Fetch in parallel (worst case stays well inside a scheduler's
+    # timeout), then diff and write in registry order so the output is
+    # deterministic.
+    with ThreadPoolExecutor(max_workers=FETCH_WORKERS) as pool:
+        results = list(pool.map(pull_one, sources))
+
+    for src, current, error in results:
+        sid = src["id"]
+        if error is not None:
+            diff["errors"].append({"source": sid, "error": error})
             continue
         if not current:
             # An empty parse almost always means the source changed its
@@ -279,8 +305,7 @@ def main():
             except json.JSONDecodeError:
                 old = {}
         if not old or args.seed:
-            snap_path.write_text(json.dumps(current, ensure_ascii=False,
-                                            indent=1))
+            write_json_atomic(snap_path, current)
             continue
         for key, it in current.items():
             if key not in old:
@@ -290,11 +315,9 @@ def main():
         for key in old:
             if key not in current:
                 diff["removed"].append({"source": sid, "key": key})
-        snap_path.write_text(json.dumps(current, ensure_ascii=False,
-                                        indent=1))
+        write_json_atomic(snap_path, current)
 
-    (state / "last-diff.json").write_text(
-        json.dumps(diff, ensure_ascii=False, indent=1))
+    write_json_atomic(state / "last-diff.json", diff)
     summary = {
         "sources_ok": len(totals),
         "sources_failed": [e["source"] for e in diff["errors"]],
@@ -307,8 +330,7 @@ def main():
         "wake_changed_count": sum(1 for d in diff["changed"]
                                   if d["source"] in wake_ids),
     }
-    (state / "last-run.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=1))
+    write_json_atomic(state / "last-run.json", summary)
     print(json.dumps(summary, ensure_ascii=False))
     return 0
 

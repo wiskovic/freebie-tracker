@@ -23,6 +23,19 @@ How an AI agent operates freebie-tracker for its owner. This is the judgment hal
 
 If a fact cannot be established from the official source, report it as unknown rather than guessing. A candidate with an unknown signup wall is reported as unverified, not as a find.
 
+## Owner profile
+
+The filter below runs on parameters, not on one person's situation. Before filtering, read the owner's profile (template: `templates/profile.example.json`; the live copy sits next to the owner's inventory, outside this repo if the deployment is public):
+
+- `can_use_credit_card`: if false, card walls reject. If true, they are a note, not a rejection.
+- `can_pass_real_name_verification`: list of countries whose real-name or KYC checks the owner can actually pass. Verification for any other country rejects.
+- `blocked_providers`: providers the owner never wants surfaced, whatever the offer.
+- `has_registered_business`: if false, programs that require a registered company are flagged as blocked, not silently dropped (the owner may have an entity the profile does not know about; when unsure, flag).
+- `categories_wanted`: if set, report only these categories in full; mention others in one line at most.
+- `owner_country` and `languages`: eligibility and reading context for region-locked offers.
+
+Keep the profile current; a stale profile filters out finds the owner could have claimed, or waves through walls they cannot pass.
+
 ## The safety filter
 
 Reject outright:

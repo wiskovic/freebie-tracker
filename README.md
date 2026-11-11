@@ -1,5 +1,8 @@
 # freebie-tracker
 
+[![CI](https://github.com/wiskovic/freebie-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/wiskovic/freebie-tracker/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **A free-stuff radar built for AI agents.** A small zero-dependency puller watches curated free-tier lists, deal forums and government program portals across several countries, diffs what changed, and wakes an AI agent only when something new appears. The agent verifies candidates against official provider pages, applies the owner's safety filter, and reports what is actually worth claiming.
 
 Built to be run by an agent on behalf of its owner: the machine half is dumb and cheap (pure Python standard library, no API keys, no LLM calls), the judgment half is the agent's.
@@ -38,6 +41,27 @@ cat state/last-diff.json    # what changed
 ```
 
 Schedule it however your agent platform schedules things (cron, a webhook poller, a systemd timer). A 4 to 6 hour rhythm works well; public giveaway codes can die within hours, so the social leg in `docs/agent-guide.md` matters for those.
+
+## What the output looks like
+
+A run prints one summary line and writes the full diff to `state/last-diff.json`:
+
+```json
+{"sources_ok": 14, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "nodeseek": 20, "free-for-dev": 1379, "geeknews": 20, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
+```
+
+```json
+{"new": [
+  {"source": "v2ex", "category": "saas", "title": "[share] open-source tool, lecture video to PDF, fully local, no API key", "link": "https://www.v2ex.com/t/1256309"},
+  {"source": "lowendtalk", "category": "vps", "title": "Giveaway: 100x free VPS for a year", "link": "https://lowendtalk.com/discussion/221872/..."}
+ ],
+ "changed": [
+  {"source": "baipiaoji", "category": "ai", "title": "Exa", "extra": "search :: $20 signup credit + $10/month"}
+ ],
+ "removed": [], "errors": []}
+```
+
+The agent wakes only because `wake_new_count + wake_changed_count` is above zero, then verifies, filters and reports. A sample finished report is in `examples/report-example.md`.
 
 ## Categories
 
@@ -79,7 +103,7 @@ docs/agent-guide.md     how an AI agent runs this: loop, filter, reporting
 docs/categories.md      category taxonomy
 docs/sources.md         source catalog with per-region notes
 examples/               a sample agent report
-templates/              owner inventory template for dedupe
+templates/              owner inventory and profile templates
 state/                  runtime snapshots and diffs (git-ignored)
 ```
 
