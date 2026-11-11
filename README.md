@@ -3,6 +3,8 @@
 [![CI](https://github.com/wiskovic/freebie-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/wiskovic/freebie-tracker/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+English | [简体中文](README.zh-CN.md)
+
 **A free-stuff radar built for AI agents.** A small zero-dependency puller watches curated free-tier lists, deal forums and government program portals across several countries, diffs what changed, and wakes an AI agent only when something new appears. The agent verifies candidates against official provider pages, applies the owner's safety filter, and reports what is actually worth claiming.
 
 Built to be run by an agent on behalf of its owner: the machine half is dumb and cheap (pure Python standard library, no API keys, no LLM calls), the judgment half is the agent's.
