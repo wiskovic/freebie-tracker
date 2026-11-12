@@ -15,7 +15,7 @@
 *运行成本为零：无 token、无 API 密钥、不调用大模型。
 智能体只在差异值得时才花注意力。*
 
-[English](README.md) | 简体中文
+[English](README.md) | 简体中文 | [한국어](README.ko.md) | [Bahasa Indonesia](README.id.md)
 
 </div>
 

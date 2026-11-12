@@ -15,7 +15,7 @@ and wakes your agent only for finds actually worth claiming.**
 *The puller costs nothing to run: no tokens, no API keys, no LLM calls.
 The agent spends attention only when the diff is worth it.*
 
-English | [简体中文](README.zh-CN.md)
+English | [简体中文](README.zh-CN.md) | [한국어](README.ko.md) | [Bahasa Indonesia](README.id.md)
 
 </div>
 
