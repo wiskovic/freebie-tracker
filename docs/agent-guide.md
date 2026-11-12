@@ -60,6 +60,7 @@ Flag, but do not auto-reject:
 - Prefer the owner's logged-in session only when the owner has explicitly allowed that, and weigh the account risk (automation on a personal account can trigger challenges or locks). Otherwise use public search.
 - Public giveaway codes are first-come-first-served and usually gone within hours. Report fast, with the code and the official claim link, and the honest chance assessment.
 - A social post is the weakest form of lead. Verify at the provider before reporting anything as claimable.
+- Social search has no memory of its own: the same viral bait post will rank again on the next wake. Keep a deployment-local reported ledger (date, name, source, verdict) covering everything already reported, passing or rejected, and check it before reporting. An item already in the ledger is never reported again unless its state materially changed (new code, new deadline, new status). The rejections section of a report names only rejections that are new in that round.
 
 ## Reporting style
 
