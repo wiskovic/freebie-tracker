@@ -21,6 +21,7 @@ The machine registry is `sources.json`; this file is the human-readable version,
 - **NodeSeek** (CN, hosting community): mostly marketplace buying and selling. Useful context on wake, useless as a trigger.
 - **Appinn, ghxi, iPlaySoft** (CN software blogs): software deals and license giveaways, read on wake.
 - **Slickdeals** (US) and **OzBargain** (AU): large consumer deals communities. Mostly consumer offers, with the occasional software or hosting gem; read on wake.
+- **Giveaway of the Day** (global): one paid Windows or Mac app given away per day since 2006; developers pay for the promotion. Licenses must be installed and activated the same day and usually exclude upgrades and support; read on wake.
 
 Checked and not machine-pullable from a typical datacenter egress: Reddit (403 to bots) and HostLoc (RSS endpoint closed). Both stay agent-leg candidates via browser, not feeds.
 

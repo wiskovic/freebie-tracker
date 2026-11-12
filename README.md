@@ -89,7 +89,7 @@ Every source and entry is tagged: `ai`, `gpu`, `cloud`, `vps`, `database`, `dev-
 |---|---|---|
 | Curated lists (CN) | baipiaoji limits.json, lanmao offers, jidan | machine feed |
 | Deal forums | LINUX DO welfare, V2EX promotions, LowEndTalk offers | machine feed |
-| Firehose | NodeSeek, Appinn, ghxi, iPlaySoft, Slickdeals, OzBargain | machine feed, passive |
+| Firehose | NodeSeek, Appinn, ghxi, iPlaySoft, Slickdeals, OzBargain, Giveaway of the Day | machine feed, passive |
 | Developer lists (global) | free-for.dev | machine feed |
 | Developer news (KR) | GeekNews | machine feed |
 | Government programs | KR AI Voucher (NIPA/MSIT), K-Startup, IndiaAI, EuroHPC, J-Startup, AI Singapore | agent page checks |

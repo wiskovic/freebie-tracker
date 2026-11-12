@@ -77,7 +77,7 @@ cat state/last-diff.json    # 看看变了什么
 |---|---|---|
 | 精选清单（中国） | baipiaoji、lanmao、jidan | 机器订阅源 |
 | 优惠论坛 | LINUX DO 福利版、V2EX 推广、LowEndTalk 优惠版 | 机器订阅源 |
-| 信息洪流 | NodeSeek、Appinn、果核剥壳、异次元软件、Slickdeals、OzBargain | 机器订阅源，被动 |
+| 信息洪流 | NodeSeek、Appinn、果核剥壳、异次元软件、Slickdeals、OzBargain、Giveaway of the Day | 机器订阅源，被动 |
 | 开发者列表（全球） | free-for.dev | 机器订阅源 |
 | 开发者新闻（韩国） | GeekNews | 机器订阅源 |
 | 大型扶持计划 | 韩国 AI Voucher（NIPA）、K-Startup、IndiaAI、EuroHPC、J-Startup、AI Singapore | 智能体查页面 |
