@@ -133,6 +133,12 @@ def parse_md_table(raw, src):
         parts = [re.sub(r"\[|\]", "", p).strip() for p in line.split("|")]
         parts = [p for p in parts if p]
         name = parts[0] if parts else urls[0]
+        # A first cell written as a markdown link arrives here as
+        # "Name(https://...)" once brackets are stripped; keep just
+        # the name so diff titles stay readable.
+        m = re.match(r"^(.*?)\(https?://[^)]*\)\s*$", name)
+        if m and m.group(1).strip():
+            name = m.group(1).strip()
         # Key by the URL's last path segment (the offer slug) when it has
         # one: stable across cosmetic URL changes and matches how the
         # curated lists name their detail pages.

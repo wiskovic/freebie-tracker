@@ -41,6 +41,17 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(out["tongyi-tingwu"]["link"],
                          "https://lanmao.ai/zh/o/tongyi-tingwu/")
 
+    def test_md_table_name_from_markdown_link_cell(self):
+        raw = ("| API | Description | Free Tier | Auth |\n"
+               "|---|---|---|---|\n"
+               "| [Foo AI](https://foo.ai) | chat | 100 req/day | apiKey |\n"
+               ).encode()
+        out = tracker.parse_md_table(raw, {})
+        self.assertEqual(len(out), 1)
+        item = next(iter(out.values()))
+        self.assertEqual(item["title"], "Foo AI")
+        self.assertEqual(item["link"], "https://foo.ai")
+
     def test_md_list_inherits_section_category(self):
         raw = ("## AI and Machine Learning\n\n"
                "* [SomeAI](https://someai.example) - free tier\n\n"

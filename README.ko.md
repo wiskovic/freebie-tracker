@@ -63,7 +63,7 @@ cat state/last-diff.json    # 무엇이 바뀌었는지 확인
 실행하면 요약 한 줄이 출력되고 전체 차분이 `state/last-diff.json`에 기록됩니다.
 
 ```json
-{"sources_ok": 15, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "free-for-dev": 1379, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
+{"sources_ok": 17, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "free-for-dev": 1379, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
 ```
 
 에이전트는 `wake_new_count + wake_changed_count`가 0보다 클 때만 깨어나 검증하고, 필터링하고, 보고합니다. 완성된 보고서 예시는 `examples/report-example.md`에 있습니다.
@@ -78,8 +78,8 @@ cat state/last-diff.json    # 무엇이 바뀌었는지 확인
 |---|---|---|
 | 선별 목록 (중국) | baipiaoji, lanmao, jidan | 기계 피드 |
 | 딜 포럼 | LINUX DO 복리 섹션, V2EX 홍보, LowEndTalk 혜택 | 기계 피드 |
-| 파이어호스 | NodeSeek, Appinn, ghxi, iPlaySoft, Slickdeals, OzBargain, Giveaway of the Day | 기계 피드, 수동 |
-| 개발자 목록 (글로벌) | free-for.dev | 기계 피드 |
+| 파이어호스 | NodeSeek, Appinn, ghxi, iPlaySoft, Slickdeals, OzBargain, Giveaway of the Day, LowEndBox | 기계 피드, 수동 |
+| 개발자 목록 (글로벌) | free-for.dev, free-ai-apis | 기계 피드 |
 | 개발자 뉴스 (한국) | GeekNews | 기계 피드 |
 | 대형 지원 프로그램 | 한국 AI 바우처(NIPA), K-Startup, IndiaAI, EuroHPC, J-Startup, AI Singapore | 에이전트 페이지 확인 |
 | 게이트형 스타트업 프로그램 | AWS Activate, Google Cloud for Startups, Microsoft for Startups, GitHub 학생 팩 | 에이전트 페이지 확인, 게이트 있음 |

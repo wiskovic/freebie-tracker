@@ -62,7 +62,7 @@ cat state/last-diff.json    # 看看变了什么
 每次运行打印一行摘要，并把完整差异写进 `state/last-diff.json`：
 
 ```json
-{"sources_ok": 15, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "free-for-dev": 1379, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
+{"sources_ok": 17, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "free-for-dev": 1379, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
 ```
 
 智能体只因为 `wake_new_count + wake_changed_count` 大于零才醒来，然后核实、过滤、报告。成品报告示例见 `examples/report-example.md`。
@@ -77,8 +77,8 @@ cat state/last-diff.json    # 看看变了什么
 |---|---|---|
 | 精选清单（中国） | baipiaoji、lanmao、jidan | 机器订阅源 |
 | 优惠论坛 | LINUX DO 福利版、V2EX 推广、LowEndTalk 优惠版 | 机器订阅源 |
-| 信息洪流 | NodeSeek、Appinn、果核剥壳、异次元软件、Slickdeals、OzBargain、Giveaway of the Day | 机器订阅源，被动 |
-| 开发者列表（全球） | free-for.dev | 机器订阅源 |
+| 信息洪流 | NodeSeek、Appinn、果核剥壳、异次元软件、Slickdeals、OzBargain、Giveaway of the Day、LowEndBox | 机器订阅源，被动 |
+| 开发者列表（全球） | free-for.dev、free-ai-apis | 机器订阅源 |
 | 开发者新闻（韩国） | GeekNews | 机器订阅源 |
 | 大型扶持计划 | 韩国 AI Voucher（NIPA）、K-Startup、IndiaAI、EuroHPC、J-Startup、AI Singapore | 智能体查页面 |
 | 门槛型创业计划 | AWS Activate、Google Cloud for Startups、Microsoft for Startups、GitHub 学生包 | 智能体查页面，有门槛 |
