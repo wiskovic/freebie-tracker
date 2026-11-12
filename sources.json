@@ -279,7 +279,7 @@
    "format": "md-table",
    "id": "free-ai-apis",
    "name": "free-ai-apis list (OuterSpacee)",
-   "notes": "Companion to free-for.dev for AI APIs: 100+ official free APIs in 15 categories with explicit free-tier and auth columns and a stated no-credit-card principle. Entries are keyed by provider domain, so several APIs on one domain collapse into a single entry; at adoption it parsed to 84 entries. Starts as firehose: its update rhythm is slower than free-for-dev, and the agent reads it on wake.",
+   "notes": "Companion to free-for.dev for AI APIs: 100+ official free APIs in 15 categories with explicit free-tier and auth columns and a stated no-credit-card principle. Entries are keyed by their full URL; under the earlier last-segment keys it parsed to 84 entries at adoption. Starts as firehose: its update rhythm is slower than free-for-dev, and the agent reads it on wake.",
    "region": "global",
    "tier": "firehose",
    "type": "feed",

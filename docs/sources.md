@@ -23,7 +23,7 @@ The machine registry is `sources.json`; this file is the human-readable version,
 - **Appinn, ghxi, iPlaySoft** (CN software blogs): software deals and license giveaways, read on wake.
 - **Slickdeals** (US) and **OzBargain** (AU): large consumer deals communities. Mostly consumer offers, with the occasional software or hosting gem; read on wake.
 - **Giveaway of the Day** (global): one paid Windows or Mac app given away per day since 2006; developers pay for the promotion. Licenses must be installed and activated the same day and usually exclude upgrades and support; read on wake.
-- **free-ai-apis** (global, `ai`): a markdown table of 100+ official free APIs in 15 categories with explicit free-tier and auth columns and a stated no-credit-card principle; the AI-API companion to free-for.dev. It parses to about 84 entries (keyed by provider domain), updates more slowly than free-for-dev, and starts as firehose.
+- **free-ai-apis** (global, `ai`): a markdown table of 100+ official free APIs in 15 categories with explicit free-tier and auth columns and a stated no-credit-card principle; the AI-API companion to free-for.dev. Entries are keyed by their full URL, updates more slowly than free-for-dev, and starts as firehose.
 - **LowEndBox** (global, `vps`, `cloud`): the editorial blog sibling of LowEndTalk, where editors curate provider offers and giveaways. Mostly paid cheap deals rather than freebies, so it is read on wake, never a trigger.
 
 Checked and not machine-pullable from a typical datacenter egress: Reddit (403 to bots) and HostLoc (RSS endpoint closed). Both stay agent-leg candidates via browser, not feeds.
@@ -51,8 +51,8 @@ Eligibility warning: most government programs require a local company, a local t
 
 Social hunting grounds are a type, not a fixed list: niche communities on any platform (Facebook groups, Discord servers, Telegram channels, forums) where people and providers habitually share free tiers, credits and giveaway codes. The registry holds the proven starting set; it is not the boundary. A community that surfaces in searches and proves itself earns a registry entry of its own. Current starting set:
 
-- **X hunter accounts** (17 in `sources.json`): individuals who habitually post free tiers, credits and giveaways, mostly from the Chinese freebie scene. One account is flagged gray (bait in the past): strictest filter. X offers no free machine feed for these; reading them needs the paid API, public search, or the owner's logged-in session with explicit permission.
-- **Vietnamese VPS Facebook groups** (5 in `sources.json`, the current Facebook contingent): providers drop public first-come-first-served codes here. A verified case: an InterData 11.11 giveaway (3 free VPS codes) posted in one of these groups was gone within a day. Latency is the whole game, which is why the social leg runs on every wake.
+- **X hunter accounts** (17 accounts, listed inside the registry's `social-x-hunters` entry): individuals who habitually post free tiers, credits and giveaways, mostly from the Chinese freebie scene. One account is flagged gray (bait in the past): strictest filter. X offers no free machine feed for these; reading them needs the paid API, public search, or the owner's logged-in session with explicit permission.
+- **Vietnamese VPS Facebook groups** (5 groups, listed inside the registry's `social-fb-vps-vn` entry; the current Facebook contingent): providers drop public first-come-first-served codes here. A verified case: an InterData 11.11 giveaway (3 free VPS codes) posted in one of these groups was gone within a day. Latency is the whole game, which is why the social leg runs on every wake.
 
 ## Adding a source
 

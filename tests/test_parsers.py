@@ -29,7 +29,7 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(set(out), {"exa", "demo"})
         self.assertIn("search", out["exa"]["extra"])
 
-    def test_md_table_keyed_by_slug_not_url(self):
+    def test_md_table_keyed_by_full_url(self):
         src = {"item_url_pattern": r"https://lanmao\.ai/zh/o/[a-z0-9\-]+/?"}
         raw = ("| Name | Quota | Note |\n"
                "|---|---|---|\n"
@@ -37,9 +37,19 @@ class ParserTests(unittest.TestCase):
                "| Groq | https://lanmao.ai/zh/o/groq-whisper/ | free |\n"
                ).encode()
         out = tracker.parse_md_table(raw, src)
-        self.assertEqual(set(out), {"tongyi-tingwu", "groq-whisper"})
-        self.assertEqual(out["tongyi-tingwu"]["link"],
-                         "https://lanmao.ai/zh/o/tongyi-tingwu/")
+        self.assertEqual(set(out), {"https://lanmao.ai/zh/o/tongyi-tingwu/",
+                                    "https://lanmao.ai/zh/o/groq-whisper/"})
+        self.assertEqual(
+            out["https://lanmao.ai/zh/o/tongyi-tingwu/"]["title"], "Tongyi")
+
+    def test_md_table_same_last_segment_different_hosts_no_collision(self):
+        raw = ("| Name | Link |\n"
+               "|---|---|\n"
+               "| A | https://a.test/offer |\n"
+               "| B | https://b.test/offer |\n").encode()
+        out = tracker.parse_md_table(raw, {})
+        self.assertEqual(set(out), {"https://a.test/offer",
+                                    "https://b.test/offer"})
 
     def test_md_table_name_from_markdown_link_cell(self):
         raw = ("| API | Description | Free Tier | Auth |\n"

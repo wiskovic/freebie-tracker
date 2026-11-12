@@ -25,7 +25,14 @@ Design notes (learned in production):
   atomically (temp file plus rename), and sources are fetched in
   parallel so a full run stays fast even when a few sources hang.
 - A first run (or --seed) only writes baselines and reports no diff.
-- HTTP 429 gets one retry after 20 s (some readers rate-limit hard).
+- A "changed" entry means its title, link or extra text differs from
+  the snapshot; any of the three fires it.
+- HTTP 429 and 5xx and connection errors get one retry (429 honors a
+  numeric Retry-After, capped at 120 s; the others wait 5 s).
+- A corrupt snapshot is a source failure, never a silent reseed: the
+  file is left untouched and the source is skipped for that run.
+- A lock file in the state dir keeps overlapping runs from stepping
+  on each other's snapshots; a lock older than 30 minutes is stale.
 
 Usage:
     python3 tracker.py                 # pull + diff
@@ -77,10 +84,19 @@ def fetch(url, timeout=25):
                 raise ValueError(f"response over {MAX_BYTES} bytes")
             return data
         except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt == 1:
-                time.sleep(20)
-                continue
-            raise
+            retryable = e.code == 429 or 500 <= e.code < 600
+            if not retryable or attempt == 2:
+                raise
+            delay = 20 if e.code == 429 else 5
+            if e.code == 429 and e.headers is not None:
+                ra = e.headers.get("Retry-After", "")
+                if ra.isdigit():
+                    delay = min(int(ra), 120)
+            time.sleep(delay)
+        except urllib.error.URLError:
+            if attempt == 2:
+                raise
+            time.sleep(5)
 
 
 def write_json_atomic(path, obj):
@@ -92,6 +108,11 @@ def write_json_atomic(path, obj):
 
 
 def entry(title, link="", extra=""):
+    # Coerce defensively: a source that serves a null or a number where
+    # a string belongs must not take the whole source down with it.
+    title = "" if title is None else str(title)
+    link = "" if link is None else str(link)
+    extra = "" if extra is None else str(extra)
     return {"title": title.strip(), "link": link.strip(),
             "extra": extra.strip()[:400]}
 
@@ -139,13 +160,10 @@ def parse_md_table(raw, src):
         m = re.match(r"^(.*?)\(https?://[^)]*\)\s*$", name)
         if m and m.group(1).strip():
             name = m.group(1).strip()
-        # Key by the URL's last path segment (the offer slug) when it has
-        # one: stable across cosmetic URL changes and matches how the
-        # curated lists name their detail pages.
-        seg = urls[0].rstrip("/").split("/")[-1]
-        key = seg if seg and not re.search(r"\.(html?|json|md|xml)$", seg) \
-            else urls[0]
-        out[key] = entry(name, urls[0], " :: ".join(parts[1:4]))
+        # Key by the full URL: unique per offer page. (An earlier
+        # version keyed by the URL's last path segment, which collided
+        # whenever two hosts shared a final segment.)
+        out[urls[0]] = entry(name, urls[0], " :: ".join(parts[1:4]))
     return out
 
 
@@ -242,6 +260,33 @@ PARSERS = {
 }
 
 
+ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
+LOCK_STALE_SECONDS = 1800
+
+
+def acquire_lock(state):
+    """Take the run lock for a state dir; return the lock path, or None
+    when another fresh run already holds it. A lock older than
+    LOCK_STALE_SECONDS is treated as abandoned and replaced."""
+    lock = state / "run.lock"
+    for _ in range(2):
+        try:
+            fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            try:
+                age = time.time() - lock.stat().st_mtime
+            except OSError:
+                continue
+            if age < LOCK_STALE_SECONDS:
+                return None
+            lock.unlink(missing_ok=True)
+            continue
+        os.write(fd, f"{os.getpid()} {int(time.time())}".encode())
+        os.close(fd)
+        return lock
+    return None
+
+
 def main():
     ap = argparse.ArgumentParser(description="freebie-tracker puller")
     ap.add_argument("--sources", default=str(BASE / "sources.json"))
@@ -251,13 +296,38 @@ def main():
                     help="(re)write baselines and report an empty diff")
     args = ap.parse_args()
 
+    state = Path(args.state_dir)
+    state.mkdir(parents=True, exist_ok=True)
+    lock = acquire_lock(state)
+    if lock is None:
+        print("error: another run holds the lock for this state dir",
+              file=sys.stderr)
+        return 3
+    try:
+        return _run(args, state)
+    finally:
+        lock.unlink(missing_ok=True)
+
+
+def _run(args, state):
     registry = json.loads(Path(args.sources).read_text())
     sources = [s for s in registry["sources"] if s.get("type") == "feed"]
+    # Source ids become snapshot file names; refuse anything that could
+    # wander out of the snapshots dir.
+    bad = [s["id"] for s in sources if not ID_RE.match(str(s["id"]))]
+    if bad:
+        print(f"error: unsafe source id(s): {', '.join(bad)}",
+              file=sys.stderr)
+        return 2
     if args.only:
         wanted = {x.strip() for x in args.only.split(",") if x.strip()}
+        unknown = wanted - {s["id"] for s in sources}
+        if unknown:
+            print(f"error: unknown source id(s): "
+                  f"{', '.join(sorted(unknown))}", file=sys.stderr)
+            return 2
         sources = [s for s in sources if s["id"] in wanted]
 
-    state = Path(args.state_dir)
     snap_dir = state / "snapshots"
     snap_dir.mkdir(parents=True, exist_ok=True)
 
@@ -296,34 +366,72 @@ def main():
                 "source": sid,
                 "error": "empty parse; previous snapshot kept"})
             continue
+        snap_path = snap_dir / f"{sid}.json"
+        old = {}
+        corrupt = False
+        if snap_path.exists():
+            try:
+                old = json.loads(snap_path.read_text())
+            except json.JSONDecodeError:
+                corrupt = True
+        if corrupt and not args.seed:
+            # A corrupt snapshot is a failure, never a silent reseed:
+            # skipping keeps the damage visible and the file untouched.
+            # An explicit --seed is the operator's recovery path.
+            diff["errors"].append({
+                "source": sid,
+                "error": "corrupt snapshot; source skipped, "
+                         "snapshot left untouched"})
+            continue
         if src.get("tier") != "curated" and len(current) > MAX_FEED_ITEMS:
-            current = dict(list(current.items())[:MAX_FEED_ITEMS])
+            # Cap with continuity: entries already tracked keep their
+            # slots, so the window edge cannot churn fake new/removed
+            # pairs between runs.
+            kept = {k: v for k, v in current.items() if k in old}
+            rest = {k: v for k, v in current.items() if k not in old}
+            room = max(0, MAX_FEED_ITEMS - len(kept))
+            current = {**kept, **dict(list(rest.items())[:room])}
         # attach source categories (a parser may set a finer one)
         for it in current.values():
             if "category" not in it and src.get("categories"):
                 it["category"] = src["categories"][0]
         totals[sid] = len(current)
-        snap_path = snap_dir / f"{sid}.json"
-        old = {}
-        if snap_path.exists():
+
+        def save_snapshot():
             try:
-                old = json.loads(snap_path.read_text())
-            except json.JSONDecodeError:
-                old = {}
+                write_json_atomic(snap_path, current)
+                return True
+            except OSError as e:
+                # A failed write must not abort the rest of the run.
+                # The diff entries stay (they will repeat next run,
+                # since the baseline was not advanced), the source is
+                # reported as failed, and the run continues.
+                diff["errors"].append({
+                    "source": sid,
+                    "error": f"snapshot write failed: {e}"[:200]})
+                totals.pop(sid, None)
+                return False
+
         if not old or args.seed:
-            write_json_atomic(snap_path, current)
+            save_snapshot()
             continue
         for key, it in current.items():
             if key not in old:
                 diff["new"].append({"source": sid, **it})
-            elif it.get("extra") and old[key].get("extra", "") != it["extra"]:
+            elif (it.get("title") != old[key].get("title")
+                    or it.get("link") != old[key].get("link")
+                    or it.get("extra", "") != old[key].get("extra", "")):
                 diff["changed"].append({"source": sid, **it})
         for key in old:
             if key not in current:
                 diff["removed"].append({"source": sid, "key": key})
-        write_json_atomic(snap_path, current)
+        save_snapshot()
 
-    write_json_atomic(state / "last-diff.json", diff)
+    try:
+        write_json_atomic(state / "last-diff.json", diff)
+    except OSError as e:
+        print(f"error: cannot write last-diff.json: {e}", file=sys.stderr)
+        return 1
     summary = {
         "sources_ok": len(totals),
         "sources_failed": [e["source"] for e in diff["errors"]],
@@ -336,7 +444,11 @@ def main():
         "wake_changed_count": sum(1 for d in diff["changed"]
                                   if d["source"] in wake_ids),
     }
-    write_json_atomic(state / "last-run.json", summary)
+    try:
+        write_json_atomic(state / "last-run.json", summary)
+    except OSError as e:
+        print(f"error: cannot write last-run.json: {e}", file=sys.stderr)
+        return 1
     print(json.dumps(summary, ensure_ascii=False))
     return 0
 
