@@ -80,7 +80,7 @@ Every source and entry is tagged: `ai`, `gpu`, `cloud`, `vps`, `database`, `dev-
 | Developer news (KR) | GeekNews | machine feed |
 | Government programs | KR AI Voucher (NIPA/MSIT), K-Startup, IndiaAI, EuroHPC, J-Startup, AI Singapore | agent page checks |
 | Gated startup programs | AWS Activate, Google Cloud for Startups, Microsoft for Startups, GitHub Student Pack | agent page checks, gated |
-| Social hunting grounds | X hunter accounts, Vietnamese VPS Facebook groups | agent leg, on wake |
+| Social hunting grounds | X hunter accounts, niche community groups (Facebook, Discord, forums) that share free tiers and giveaways | agent leg, on wake |
 
 Full registry with notes: `sources.json`. Human-readable catalog: `docs/sources.md`.
 

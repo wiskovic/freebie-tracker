@@ -55,7 +55,7 @@ Flag, but do not auto-reject:
 
 ## The social leg
 
-`sources.json` lists social hunting grounds (type `social`): X accounts that habitually post freebies and Facebook community groups where providers drop public codes. There is no honest machine feed for these without the paid X API or a logged-in session, so the agent reads them on wake:
+`sources.json` lists social hunting grounds (type `social`): X accounts that habitually post freebies and niche community groups where providers drop public codes. The registry is the proven starting set, not the boundary: when scanning, also check other niche communities that surface in search results (other Facebook groups, Discord servers, Telegram channels, forums) and habitually share freebies, and treat their posts as unregistered leads. A community that repeatedly surfaces real finds earns its own registry entry. There is no honest machine feed for these without the paid X API or a logged-in session, so the agent reads them on wake:
 
 - Prefer the owner's logged-in session only when the owner has explicitly allowed that, and weigh the account risk (automation on a personal account can trigger challenges or locks). Otherwise use public search.
 - Public giveaway codes are first-come-first-served and usually gone within hours. Report fast, with the code and the official claim link, and the honest chance assessment.

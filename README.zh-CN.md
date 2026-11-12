@@ -68,7 +68,7 @@ cat state/last-diff.json    # 看看变了什么
 | 开发者新闻（韩国） | GeekNews | 机器订阅源 |
 | 大型扶持计划 | 韩国 AI Voucher（NIPA）、K-Startup、IndiaAI、EuroHPC、J-Startup、AI Singapore | 智能体查页面 |
 | 门槛型创业计划 | AWS Activate、Google Cloud for Startups、Microsoft for Startups、GitHub 学生包 | 智能体查页面，有门槛 |
-| 社交猎场 | X 猎手账号、越南 VPS Facebook 群组 | 智能体腿，唤醒时查 |
+| 社交猎场 | X 猎手账号、分享免费额度与赠送的小众社群（Facebook、Discord、论坛等） | 智能体腿，唤醒时查 |
 
 完整注册表（含备注）在 `sources.json`，人类可读目录在 `docs/sources.md`。
 
