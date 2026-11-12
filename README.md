@@ -63,7 +63,7 @@ Schedule it however your agent platform schedules things (cron, a webhook poller
 A run prints one summary line and writes the full diff to `state/last-diff.json`:
 
 ```json
-{"sources_ok": 17, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "nodeseek": 20, "free-for-dev": 1379, "geeknews": 20, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
+{"sources_ok": 18, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "lowendspirit": 50, "nodeseek": 20, "free-for-dev": 1379, "geeknews": 20, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
 ```
 
 ```json
@@ -88,7 +88,7 @@ Every source and entry is tagged: `ai`, `gpu`, `cloud`, `vps`, `database`, `dev-
 | Layer | Examples | How |
 |---|---|---|
 | Curated lists (CN) | baipiaoji limits.json, lanmao offers, jidan | machine feed |
-| Deal forums | LINUX DO welfare, V2EX promotions, LowEndTalk offers | machine feed |
+| Deal forums | LINUX DO welfare, V2EX promotions, LowEndTalk offers, LowEndSpirit free offers | machine feed |
 | Firehose | NodeSeek, Appinn, ghxi, iPlaySoft, Slickdeals, OzBargain, Giveaway of the Day, LowEndBox | machine feed, passive |
 | Developer lists (global) | free-for.dev, free-ai-apis | machine feed |
 | Developer news (KR) | GeekNews | machine feed |

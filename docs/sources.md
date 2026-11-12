@@ -15,6 +15,7 @@ The machine registry is `sources.json`; this file is the human-readable version,
 - **V2EX promotions** (CN): promotions board RSS. Mixed quality; relays, carpools and resales are common and fail the filter.
 - **GeekNews** (KR): Korean developer news. Government support calls, AI subsidy announcements and startup credit programs surface here in Korean before they are picked up in English.
 - **LowEndTalk offers** (global): the offers category of the Western hosting community. Provider giveaways land here, including a verified catch of 100 free one-year VPS from a RackNerd/AdminBolt thread.
+- **LowEndSpirit free offers** (global): the Free Offers and Stuff category of LowEndTalk's sister community. Because the feed is restricted to that one category, it is the cleanest free-VPS signal outside the curated lists: free NAT VPS trials without a card, free hosting, community free VPS programs. Some offers are gated by forum participation and a few threads are long-lived pinned offers; volume is low, so it may wake.
 
 ## Machine feeds, firehose (never wake alone)
 

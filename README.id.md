@@ -64,7 +64,7 @@ Jadwalkan dengan cara apa pun yang platform agent kamu dukung (cron, webhook pol
 Satu kali jalan mencetak satu baris ringkasan dan menulis diff lengkap ke `state/last-diff.json`:
 
 ```json
-{"sources_ok": 17, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "free-for-dev": 1379, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
+{"sources_ok": 18, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "free-for-dev": 1379, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
 ```
 
 Agent hanya bangun karena `wake_new_count + wake_changed_count` lebih besar dari nol, lalu memverifikasi, menyaring, dan melaporkan. Contoh laporan jadinya ada di `examples/report-example.md`.
@@ -78,7 +78,7 @@ Setiap sumber dan entri diberi tag: `ai`, `gpu`, `cloud`, `vps`, `database`, `de
 | Lapisan | Contoh | Cara |
 |---|---|---|
 | Daftar kurasi (CN) | baipiaoji limits.json, lanmao offers, jidan | feed mesin |
-| Forum deal | LINUX DO welfare, V2EX promotions, LowEndTalk offers | feed mesin |
+| Forum deal | LINUX DO welfare, V2EX promotions, LowEndTalk offers, LowEndSpirit free offers | feed mesin |
 | Firehose | NodeSeek, Appinn, ghxi, iPlaySoft, Slickdeals, OzBargain, Giveaway of the Day, LowEndBox | feed mesin, pasif |
 | Daftar developer (global) | free-for.dev, free-ai-apis | feed mesin |
 | Berita developer (KR) | GeekNews | feed mesin |
