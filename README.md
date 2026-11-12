@@ -1,13 +1,27 @@
-# freebie-tracker
+<div align="center">
+
+# 📡 freebie-tracker
+
+**Zero-token freebie radar for AI agents.
+Watches free-tier lists and deal communities worldwide, diffs what changed,
+and wakes your agent only for finds actually worth claiming.**
 
 [![CI](https://github.com/wiskovic/freebie-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/wiskovic/freebie-tracker/actions/workflows/ci.yml)
+[![last-commit](https://img.shields.io/github/last-commit/wiskovic/freebie-tracker)](https://github.com/wiskovic/freebie-tracker/commits/main)
+[![repo-size](https://img.shields.io/github/repo-size/wiskovic/freebie-tracker)](https://github.com/wiskovic/freebie-tracker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
+
+*The puller costs nothing to run: no tokens, no API keys, no LLM calls.
+The agent spends attention only when the diff is worth it.*
 
 English | [简体中文](README.zh-CN.md)
 
-**A free-stuff radar built for AI agents.** A small zero-dependency puller watches curated free-tier lists, deal forums and government program portals across several countries, diffs what changed, and wakes an AI agent only when something new appears. The agent verifies candidates against official provider pages, applies the owner's safety filter, and reports what is actually worth claiming.
+</div>
 
-Built to be run by an agent on behalf of its owner: the machine half is dumb and cheap (pure Python standard library, no API keys, no LLM calls), the judgment half is the agent's.
+---
+
+Built to be run by an agent on behalf of its owner: the machine half is dumb and cheap (pure Python standard library, no API keys, no LLM calls), the judgment half is the agent's. The agent verifies candidates against official provider pages, applies the owner's safety filter, and reports what is actually worth claiming.
 
 ## Why
 

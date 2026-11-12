@@ -1,13 +1,27 @@
-# freebie-tracker
+<div align="center">
+
+# 📡 freebie-tracker
+
+**为 AI 智能体而建的零 token 免费资源雷达。
+监视全球免费额度清单与优惠社区，计算变化差异，
+只在发现真正值得领取的东西时才唤醒你的智能体。**
 
 [![CI](https://github.com/wiskovic/freebie-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/wiskovic/freebie-tracker/actions/workflows/ci.yml)
+[![last-commit](https://img.shields.io/github/last-commit/wiskovic/freebie-tracker)](https://github.com/wiskovic/freebie-tracker/commits/main)
+[![repo-size](https://img.shields.io/github/repo-size/wiskovic/freebie-tracker)](https://github.com/wiskovic/freebie-tracker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
+
+*运行成本为零：无 token、无 API 密钥、不调用大模型。
+智能体只在差异值得时才花注意力。*
 
 [English](README.md) | 简体中文
 
-**为 AI 智能体而建的免费资源雷达。** 一个零依赖的小型拉取器，持续监视精选的免费额度清单、优惠论坛和多个国家与地区的计划门户，计算每次的变化差异，只在出现新内容时才唤醒 AI 智能体。智能体随后到服务商官方页面核实候选条目，套用主人的安全过滤条件，只报告真正值得领取的东西。
+</div>
 
-机器部分刻意做得又笨又便宜（纯 Python 标准库，无需 API 密钥，不调用大模型），判断部分交给智能体。
+---
+
+机器部分刻意做得又笨又便宜（纯 Python 标准库，无需 API 密钥，不调用大模型），判断部分交给智能体。智能体随后到服务商官方页面核实候选条目，套用主人的安全过滤条件，只报告真正值得领取的东西。
 
 ## 为什么
 
