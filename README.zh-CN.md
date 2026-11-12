@@ -62,7 +62,7 @@ cat state/last-diff.json    # 看看变了什么
 每次运行打印一行摘要，并把完整差异写进 `state/last-diff.json`：
 
 ```json
-{"sources_ok": 14, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "free-for-dev": 1379, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
+{"sources_ok": 15, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "lanmao": 341, "jidan": 40, "linuxdo": 25, "v2ex": 50, "lowendtalk": 100, "free-for-dev": 1379, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
 ```
 
 智能体只因为 `wake_new_count + wake_changed_count` 大于零才醒来，然后核实、过滤、报告。成品报告示例见 `examples/report-example.md`。
