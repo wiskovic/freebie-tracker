@@ -76,6 +76,14 @@ class MainRunCase(unittest.TestCase):
         self.assertEqual(self.summary()["sources_failed"], ["demo"])
         self.assertEqual(snap.read_bytes(), before)
 
+    def test_wrong_shape_snapshot_counts_as_corrupt(self):
+        self.assertEqual(self.run_main("--seed"), 0)
+        snap = self.state / "snapshots" / "demo.json"
+        snap.write_text("[1, 2, 3]")
+        self.assertEqual(self.run_main(), 0)
+        self.assertEqual(self.summary()["sources_failed"], ["demo"])
+        self.assertEqual(snap.read_text(), "[1, 2, 3]")
+
     def test_only_unknown_id_is_an_error(self):
         self.assertEqual(self.run_main("--only", "nope"), 2)
 

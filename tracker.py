@@ -372,6 +372,11 @@ def _run(args, state):
         if snap_path.exists():
             try:
                 old = json.loads(snap_path.read_text())
+                if not isinstance(old, dict):
+                    # Valid JSON, wrong shape: same handling as corrupt,
+                    # or the diff below would crash on .items()/.get().
+                    corrupt = True
+                    old = {}
             except json.JSONDecodeError:
                 corrupt = True
         if corrupt and not args.seed:
