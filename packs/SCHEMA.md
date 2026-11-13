@@ -28,7 +28,7 @@ rules as the main registry.
 
 Top level: `version` (integer), `about` (one short paragraph: the
 country's freebie shape in two or three sentences), `country`,
-`terms`, `feeds`, `gdelt_presets`, `hunting_grounds`,
+`terms`, `feeds`, `communities`, `hunting_grounds`,
 `local_patterns`.
 
 ### country
@@ -46,7 +46,8 @@ highest-precision trial signal), `credit` (credit-offer phrasings),
 `community_phrases` (how the local community itself says free),
 `umbrella` (deal vocabulary, useful but retail-polluted),
 `negative_markers` (phrasings that mark retail noise). Groups are
-vocabulary for the agent leg and for composing GDELT queries; the
+vocabulary for the agent leg: they are how the agent searches the
+pack's communities and hunting grounds in the local language; the
 runner does not filter by them.
 
 ### feeds
@@ -60,17 +61,35 @@ optional `name`, `categories`, `wake`, `notes`, `item_url_pattern`,
 non-curated feeds at the tracker's item cap with continuity, and
 diffs them like the main registry.
 
-### gdelt_presets
+### communities
 
-GDELT is a free, keyless news index; a preset is one standing query
-for the agent's news layer. Required: `id`, `query` (a full GDELT
-query string, with the country and language filters written into
-it, e.g. `sourcecountry:FR sourcelang:fra`). Optional: `timespan`
-(default `1m`; widen a preset to `3m` in pack.json for a first
-sweep), `maxrecords` (default 25), `wake` (default false). The
-runner calls presets serially with at least 6 seconds between
-calls, because GDELT allows roughly one request per 5 seconds per
-IP. An empty answer is valid and keeps the preset's snapshot.
+The grassroots layer, and the pack's center of gravity: specific
+people and groups who post finds where news coverage never
+reaches. Each entry names one source an agent follows and reads
+the way it reads the main registry's social sources. Required:
+`id`, `platform` (one of `x`, `discord`, `telegram`, `facebook`,
+`forum`, `other`), `name`, `url` (the profile, server, channel,
+or group address), `focus` (what surfaces there and why it earns
+attention, in one or two sentences), `cadence` (how often it is
+worth reading, in words). Optional: `wake` (default false).
+
+Communities are agent-leg data: the runner never pulls them.
+Verify each one live before writing it down, under the same
+admission test as every other layer: what it posts must be worth
+acting on, monitoring, and claiming.
+
+Worked example of a community entry:
+
+```json
+{
+  "id": "xx-hunter-example",
+  "platform": "x",
+  "name": "@examplehunter",
+  "url": "https://x.com/examplehunter",
+  "focus": "Posts local cloud credit giveaways and free VPS trials, usually within hours of launch.",
+  "cadence": "daily"
+}
+```
 
 ### hunting_grounds
 
@@ -129,7 +148,7 @@ audit trail belongs to whoever researched the pack, outside it.
 
 ## Ids and wake
 
-Every `id` in a pack, across all three layers, must match
+Every `id` in a pack, across all blocks, must match
 `^[a-z0-9][a-z0-9_-]*$` and be unique within the pack. Ids prefix
 with the country code (`fr-`, `sa-`) by convention. Wake accounting
 follows the main system: the run summary counts new and changed
@@ -143,11 +162,11 @@ diff in `last-diff.json`, the summary in `last-run.json`, in the
 same shapes the main tracker writes, with every diff entry also
 carrying the pack's folder name in a `pack` field. Options:
 `--seed` (write baselines, empty diff; also the recovery path for a
-corrupt snapshot), `--skip-gdelt`, `--only <ids>` (unknown ids are
-refused). Exit codes: 0 ok, 1 final state write failed, 2 invalid
-pack or unknown ids, 3 another run holds the state dir's lock.
-Runs of different packs from one machine should be sequential: the
-GDELT spacing is per process, and GDELT's limit is per IP.
+corrupt snapshot), `--only <ids>` (unknown ids are refused;
+community ids are known ids, but they are agent-leg data, so
+selecting one runs no machine source). Exit codes: 0 ok, 1 final
+state write failed, 2 invalid pack or unknown ids, 3 another run
+holds the state dir's lock.
 
 ## Outcome log (for deployments)
 
@@ -166,6 +185,16 @@ pack earns its place, per claimable find rather than per raw
 signal.
 
 ## Authoring rules
+
+A pack is built grassroots-first. Claimable freebies surface in
+communities (hunters on social platforms, local forums, chat
+groups) long before, and usually instead of, news coverage, so a
+pack's weight sits in its communities, hunting grounds, and local
+terms. A pack deliberately carries no news-index layer: news
+presets were removed from this format in November 2026 on exactly
+this evidence, because a news index can only report what
+journalism covered, and freebie opportunities are grassroots
+events.
 
 A pack entry earns its place the same way a registry source does:
 a find from it must be worth acting on, monitoring, and claiming

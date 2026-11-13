@@ -63,7 +63,7 @@ class AllPacksCase(unittest.TestCase):
                     tempfile.TemporaryDirectory() as tmp:
                 argv = ["pack_runner.py", str(pack_dir),
                         "--state-dir", str(Path(tmp) / "state"),
-                        "--seed", "--skip-gdelt",
+                        "--seed",
                         "--only", ",".join(f["id"] for f in feeds)]
                 with mock.patch.object(sys, "argv", argv), \
                         mock.patch.object(

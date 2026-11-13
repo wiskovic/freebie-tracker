@@ -26,12 +26,6 @@ Strongest term formula: (gratuit) combined with (VPS, hébergement, serveur), co
 - **TeamKit** (https://www.teamkit.fr): a French community project that creates free dedicated game servers on machines in France, with no subscription and no card, requests handled through a short form read by humans. Small and games-specific, but a living example of the "serveur gratuit communautaire" pattern.
 - **CHATONS directory** (https://chatons.org): the catalogue of France's alternative and associative hosting collective. Not a feed; a static map. Harvest the member host list once, then watch each member's site for new free services and trials.
 
-## GDELT presets
+## Communities
 
-The GDELT DOC API is free and keyless, and its filters fit the pack's shape:
-
-- Core query: ("VPS gratuit" OR "hébergement gratuit" OR "serveur gratuit" OR "essai gratuit") sourcecountry:FR sourcelang:fra
-- No-card variant: the core query plus AND ("sans CB" OR "sans carte bancaire")
-- Sweep settings: mode ArtList, format json, sort DateDesc, maxrecords 25, timespan 1m. For a first sweep, widen the preset's timespan to 3m in pack.json.
-
-Usage note: GDELT limits one request per 5 seconds per IP. The runner calls all presets in a single run with 6 seconds between calls. From a network whose IP is shared, calls easily hit that limit and are recorded as a source failure without breaking the run; an empty GDELT answer is valid and its snapshot is kept. Run from a quieter egress, or as a scheduled job a few times a day.
+None named yet. This pack's community depth currently lives in its hunting grounds (the DISBOARD listing above is where French hébergeurs actually surface); named hunters and groups will be added here as they are verified live, under the same admission test as every other entry.

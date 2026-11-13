@@ -46,7 +46,7 @@ Whichever pattern is used, the agent's side of the work is identical and is spec
 
 ## Country packs
 
-A deployment focused on one country can add that country's pack (`packs/<continent>/<country>/`, format in `packs/SCHEMA.md`) as a second, self-contained input layer beside the registry. The contract keeps the same shape: the pack's feeds and GDELT presets run through `packs/pack_runner.py`, which writes the same `last-run.json` and `last-diff.json` shapes into the pack's own state directory, and the same wake rule applies to its summary. The pack's terms and hunting grounds are agent-leg data, worked exactly like the registry's social sources: read them with the pack's local vocabulary, verify finds at the official provider, and pass them through the same safety filter and report-once ledger.
+A deployment focused on one country can add that country's pack (`packs/<continent>/<country>/`, format in `packs/SCHEMA.md`) as a second, self-contained input layer beside the registry. The contract keeps the same shape: the pack's feeds run through `packs/pack_runner.py`, which writes the same `last-run.json` and `last-diff.json` shapes into the pack's own state directory, and the same wake rule applies to its summary. The pack's terms, communities, and hunting grounds are agent-leg data, worked exactly like the registry's social sources: read them with the pack's local vocabulary, verify finds at the official provider, and pass them through the same safety filter and report-once ledger.
 
 ## Porting checklist
 

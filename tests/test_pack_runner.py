@@ -1,10 +1,10 @@
 """Tests for packs/pack_runner.py with a stubbed tracker.fetch.
 
 Covers the happy paths (seed, changed, new) and the failure paths
-the pack audit demanded: fetch failure, empty parses, GDELT empty
-answers, corrupt snapshots and --seed recovery, write failures,
-unsafe or duplicate ids, --only, the run lock, watch URL handling,
-and the real France pack loading and validating.
+the pack audit demanded: fetch failure, empty parses, corrupt
+snapshots and --seed recovery, write failures, unsafe or duplicate
+ids, community validation, --only, the run lock, watch URL
+handling, and the real France pack loading and validating.
 """
 import json
 import sys
@@ -33,9 +33,6 @@ RSS_ONE = (b"<rss><channel>"
            b"<item><title>Un</title><link>https://x.test/1</link></item>"
            b"</channel></rss>")
 RSS_EMPTY = b"<rss><channel></channel></rss>"
-GDELT_V1 = json.dumps({"articles": [
-    {"title": "VPS gratuit chez PetitHost", "url": "https://h.test/1",
-     "domain": "h.test", "seendate": "20261112"}]}).encode()
 LIST_V1 = (b'<a href="https://disboard.org/server/111">HostOne</a>'
            b'<a href="/about">About</a>')
 LIST_V2 = (b'<a href="https://disboard.org/server/111">HostOne</a>'
@@ -52,8 +49,11 @@ def base_pack():
         "feeds": [{"id": "fr-feed", "type": "feed", "format": "rss",
                    "url": "https://x.test/feed", "tier": "firehose",
                    "wake": False, "categories": ["dev-tools"]}],
-        "gdelt_presets": [{"id": "fr-gdelt", "query": "VPS gratuit",
-                           "timespan": "1m", "maxrecords": 5}],
+        "communities": [{"id": "fr-hunter", "platform": "x",
+                         "name": "@petitchasseur",
+                         "url": "https://x.com/petitchasseur",
+                         "focus": "Posts French hosting trials.",
+                         "cadence": "daily"}],
         "hunting_grounds": [
             {"id": "fr-list", "kind": "listing", "name": "Listing",
              "url": "https://disboard.org/servers/tag/vps?fl=fr",
@@ -68,17 +68,12 @@ class PackRunnerCase(unittest.TestCase):
         self.pack_dir = Path(self.tmp.name) / "france"
         self.pack_dir.mkdir(parents=True)
         self.state = Path(self.tmp.name) / "state"
-        self.data = {"feed": RSS_V1, "gdelt": GDELT_V1, "list": LIST_V1}
+        self.data = {"feed": RSS_V1, "list": LIST_V1}
         self.broken = set()
         self.write_pack(base_pack())
 
         def fake_fetch(url, timeout=25):
-            if "gdeltproject" in url:
-                key = "gdelt"
-            elif "disboard" in url:
-                key = "list"
-            else:
-                key = "feed"
+            key = "list" if "disboard" in url else "feed"
             if key in self.broken:
                 raise OSError("network down")
             return self.data[key]
@@ -94,9 +89,7 @@ class PackRunnerCase(unittest.TestCase):
         argv = ["pack_runner.py", str(self.pack_dir),
                 "--state-dir", str(self.state), *extra]
         with mock.patch.object(sys, "argv", argv), \
-                mock.patch.object(tracker, "fetch", self.fake_fetch), \
-                mock.patch.object(pack_runner.time, "sleep",
-                                  lambda s: None):
+                mock.patch.object(tracker, "fetch", self.fake_fetch):
             return pack_runner.main()
 
     def summary(self):
@@ -110,9 +103,9 @@ class PackRunnerCase(unittest.TestCase):
     def test_seed_then_changes_across_layers(self):
         self.assertEqual(self.run_runner("--seed"), 0)
         s = self.summary()
-        self.assertEqual(s["sources_ok"], 3)
+        self.assertEqual(s["sources_ok"], 2)
         self.assertEqual(s["items_per_source"],
-                         {"fr-feed": 1, "fr-gdelt": 1, "fr-list": 1})
+                         {"fr-feed": 1, "fr-list": 1})
         self.data["feed"] = RSS_V2
         self.data["list"] = LIST_V2
         self.assertEqual(self.run_runner(), 0)
@@ -154,15 +147,6 @@ class PackRunnerCase(unittest.TestCase):
         self.assertIn("fr-feed", self.summary()["sources_failed"])
         self.assertEqual(snap.read_text(), before)
 
-    def test_empty_gdelt_answer_keeps_snapshot_on_normal_run(self):
-        self.assertEqual(self.run_runner("--seed"), 0)
-        self.data["gdelt"] = b"{}"
-        self.assertEqual(self.run_runner(), 0)
-        s = self.summary()
-        self.assertEqual(s["sources_failed"], [])
-        self.assertEqual(s["items_per_source"]["fr-gdelt"], 1)
-        self.assertEqual(s["removed_count"], 0)
-
     def test_corrupt_snapshot_blocks_then_seed_recovers(self):
         self.assertEqual(self.run_runner("--seed"), 0)
         snap = self.state / "snapshots" / "fr-feed.json"
@@ -194,9 +178,7 @@ class PackRunnerCase(unittest.TestCase):
                 "--state-dir", str(self.state), "--seed"]
         with mock.patch.object(sys, "argv", argv), \
                 mock.patch.object(tracker, "fetch", self.fake_fetch), \
-                mock.patch.object(tracker, "write_json_atomic", flaky), \
-                mock.patch.object(pack_runner.time, "sleep",
-                                  lambda s: None):
+                mock.patch.object(tracker, "write_json_atomic", flaky):
             self.assertEqual(pack_runner.main(), 1)
 
     def test_run_lock_blocks_second_run(self):
@@ -214,13 +196,30 @@ class PackRunnerCase(unittest.TestCase):
 
     def test_duplicate_id_across_layers_is_refused(self):
         pack = base_pack()
-        pack["gdelt_presets"][0]["id"] = "fr-feed"
+        pack["hunting_grounds"][0]["id"] = "fr-feed"
         self.write_pack(pack)
         self.assertEqual(self.run_runner("--seed"), 2)
 
-    def test_skip_gdelt(self):
-        self.assertEqual(self.run_runner("--seed", "--skip-gdelt"), 0)
-        self.assertNotIn("fr-gdelt", self.summary()["items_per_source"])
+    def test_communities_are_agent_leg_data(self):
+        # A valid community entry validates, is a known id, and is
+        # never pulled by the runner: the seed still counts only
+        # the machine sources.
+        self.assertEqual(self.run_runner("--seed"), 0)
+        s = self.summary()
+        self.assertNotIn("fr-hunter", s["items_per_source"])
+        self.assertEqual(self.run_runner("--only", "fr-hunter"), 0)
+
+    def test_invalid_community_platform_is_refused(self):
+        pack = base_pack()
+        pack["communities"][0]["platform"] = "tiktok"
+        self.write_pack(pack)
+        self.assertEqual(self.run_runner("--seed"), 2)
+
+    def test_community_missing_focus_is_refused(self):
+        pack = base_pack()
+        del pack["communities"][0]["focus"]
+        self.write_pack(pack)
+        self.assertEqual(self.run_runner("--seed"), 2)
 
     def test_only_selection_and_unknown_id(self):
         self.assertEqual(self.run_runner("--seed", "--only", "fr-feed"),

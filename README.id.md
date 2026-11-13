@@ -102,7 +102,7 @@ Filter ini berjalan dengan parameter keadaan pemiliknya (lihat `templates/profil
 
 ## Paket negara
 
-Sebagian bansos itu spesifik negara: provider lokal, komunitas lokal, dan kata lokal buat "gratis". Paket negara adalah perangkat berburu tersaring satu negara dalam bentuk yang bisa dibaca mesin, di `packs/<benua>/<negara>/`: satu `pack.json` (istilah pencarian lokal, feed berbentuk sama seperti registry, ladang perburuan kaki agent, preset berita GDELT) plus README manusia yang singkat. Agent mana pun bisa memuat JSON nya langsung, atau menjalankan runner bersamanya, yang menarik feed dan preset paket lalu menghitung diff nya persis seperti registry utama:
+Sebagian bansos itu spesifik negara: provider lokal, komunitas lokal, dan kata lokal buat "gratis". Paket negara adalah perangkat berburu tersaring satu negara dalam bentuk yang bisa dibaca mesin, di `packs/<benua>/<negara>/`: satu `pack.json` (istilah pencarian lokal, feed berbentuk sama seperti registry, komunitas lokal buat diikuti, ladang perburuan kaki agent) plus README manusia yang singkat. Agent mana pun bisa memuat JSON nya langsung, atau menjalankan runner bersamanya, yang menarik feed paket lalu menghitung diff nya persis seperti registry utama:
 
 ```
 python3 packs/pack_runner.py packs/europe/france

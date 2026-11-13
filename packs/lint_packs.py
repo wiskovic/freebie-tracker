@@ -6,8 +6,8 @@ human auditor should never have to check by eye again:
 
 - pack.json parses and passes the runner's schema validation,
 - README.md exists and faithfully covers the pack's data: every
-  feed URL, every hunting-ground URL, every search term, and the
-  first GDELT preset's query, verbatim.
+  feed URL, every community URL, every hunting-ground URL, and
+  every search term, verbatim.
 
 Usage:
     python3 packs/lint_packs.py            # all packs
@@ -45,6 +45,10 @@ def check_pack(pack_dir):
         if f.get("url") and f["url"] not in readme:
             problems.append(f"README does not mention feed url "
                             f"of {f.get('id')}")
+    for c in pack.get("communities", []):
+        if c.get("url") and c["url"] not in readme:
+            problems.append(f"README does not mention community "
+                            f"url of {c.get('id')}")
     for g in pack.get("hunting_grounds", []):
         if g.get("url") and g["url"] not in readme:
             problems.append(f"README does not mention ground url "
@@ -54,10 +58,6 @@ def check_pack(pack_dir):
             if t not in readme:
                 problems.append(f"README does not carry term {t!r} "
                                 f"from terms.{group}")
-    presets = pack.get("gdelt_presets") or []
-    if presets and presets[0].get("query") not in readme:
-        problems.append("README does not carry the first GDELT "
-                        "preset's query verbatim")
     return problems
 
 

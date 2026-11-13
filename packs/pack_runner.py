@@ -4,33 +4,24 @@
 Packs live at packs/<continent>/<country>/ in the main repository.
 A pack's pack.json carries one country's filtered hunting kit in
 machine-readable form: local search terms, registry-shaped feeds,
-agent-leg hunting grounds, and GDELT presets (schema: packs/SCHEMA.md).
-This runner executes the pack's machine layers:
+communities to follow, and agent-leg hunting grounds (schema:
+packs/SCHEMA.md). This runner executes the pack's machine layers:
 
 - feeds are pulled and parsed with the main tracker's parsers,
-- GDELT presets are called serially with polite spacing (GDELT allows
-  roughly one request per 5 seconds per IP) and their articles diffed,
 - hunting grounds that declare a `watch` block have their listing
   page diffed for newly surfaced links.
 
-Everything else in a pack (terms, patterns, unwatchable grounds) is
-data for the agent leg, used exactly like the main registry's social
-sources. The runner mirrors tracker.py's run semantics: the same diff
-rules (changed fires on title, link, or extra), the same empty-parse
-and corrupt-snapshot guards, the same item cap with continuity, the
-same run lock, and atomic writes throughout. One deliberate deviation:
-an empty GDELT answer on a normal run means "no articles in the
-window right now", so the preset's snapshot is kept as-is instead of
-being diffed into mass removals.
-
-Packs are meant to run one at a time from one machine: the GDELT
-spacing is per process, so running several packs in parallel from
-one IP can still trip GDELT's limit.
+Everything else in a pack (terms, patterns, communities,
+unwatchable grounds) is data for the agent leg, used exactly like
+the main registry's social sources. The runner mirrors
+tracker.py's run semantics: the same diff rules (changed fires on
+title, link, or extra), the same empty-parse and corrupt-snapshot
+guards, the same item cap with continuity, the same run lock, and
+atomic writes throughout.
 
 Usage:
     python3 packs/pack_runner.py packs/europe/france
     python3 packs/pack_runner.py packs/europe/france --seed
-    python3 packs/pack_runner.py packs/europe/france --skip-gdelt
     python3 packs/pack_runner.py packs/europe/france --only fr-korben
     python3 packs/pack_runner.py packs/europe/france --state-dir /tmp/fr
 
@@ -41,7 +32,6 @@ import argparse
 import json
 import re
 import sys
-import time
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -50,10 +40,10 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 import tracker  # noqa: E402  (fetch, PARSERS, entry, locks, caps)
 
-GDELT_API = "https://api.gdeltproject.org/api/v2/doc/doc"
-GDELT_MIN_GAP = 6  # seconds between GDELT calls from one IP
 GROUND_KINDS = ("listing", "site", "directory", "community")
 FEED_TIERS = ("wake", "firehose", "curated")
+COMMUNITY_PLATFORMS = ("x", "discord", "telegram", "facebook",
+                       "forum", "other")
 
 
 def validate_pack(pack):
@@ -102,15 +92,19 @@ def validate_pack(pack):
         if f.get("tier") not in FEED_TIERS:
             problems.append(f"feeds: {f.get('id')}: tier must be one "
                             f"of {FEED_TIERS}")
-    for p in pack.get("gdelt_presets", []):
-        if not isinstance(p, dict):
-            problems.append("gdelt_presets: every entry must be an "
+    for c in pack.get("communities", []):
+        if not isinstance(c, dict):
+            problems.append("communities: every entry must be an "
                             "object")
             continue
-        check_id("gdelt_presets", p)
-        if not p.get("query"):
-            problems.append(f"gdelt_presets: {p.get('id')}: query is "
-                            "required")
+        check_id("communities", c)
+        if c.get("platform") not in COMMUNITY_PLATFORMS:
+            problems.append(f"communities: {c.get('id')}: platform "
+                            f"must be one of {COMMUNITY_PLATFORMS}")
+        for key in ("name", "url", "focus", "cadence"):
+            if not c.get(key):
+                problems.append(f"communities: {c.get('id')}: "
+                                f"'{key}' is required")
     for g in pack.get("hunting_grounds", []):
         if not isinstance(g, dict):
             problems.append("hunting_grounds: every entry must be an "
@@ -147,24 +141,6 @@ def validate_pack(pack):
                 isinstance(v, list) for v in terms.values()):
             problems.append("terms: must be an object of string lists")
     return problems
-
-
-def gdelt_entries(preset):
-    params = {"query": preset["query"], "mode": "ArtList",
-              "format": "json", "sort": "DateDesc",
-              "maxrecords": preset.get("maxrecords", 25),
-              "timespan": preset.get("timespan", "1m")}
-    url = GDELT_API + "?" + urllib.parse.urlencode(params)
-    data = json.loads(tracker.fetch(url))
-    out = {}
-    for a in data.get("articles", []):
-        link = a.get("url", "")
-        if not link:
-            continue
-        extra = " :: ".join(x for x in (a.get("domain", ""),
-                                        a.get("seendate", "")) if x)
-        out[link] = tracker.entry(a.get("title", ""), link, extra)
-    return out
 
 
 def watch_entries(ground):
@@ -279,11 +255,9 @@ def main():
                     help="(re)write baselines and report an empty "
                          "diff; also the recovery path for a corrupt "
                          "snapshot")
-    ap.add_argument("--skip-gdelt", action="store_true",
-                    help="do not call the GDELT presets this run")
     ap.add_argument("--only", default="",
                     help="comma-separated source ids (feeds, "
-                         "presets, grounds)")
+                         "grounds)")
     args = ap.parse_args()
 
     pack_dir = Path(args.pack_dir)
@@ -300,7 +274,7 @@ def main():
         return 2
 
     all_ids = ([f["id"] for f in pack.get("feeds", [])]
-               + [p["id"] for p in pack.get("gdelt_presets", [])]
+               + [c["id"] for c in pack.get("communities", [])]
                + [g["id"] for g in pack.get("hunting_grounds", [])])
     only = {x.strip() for x in args.only.split(",") if x.strip()}
     if only:
@@ -329,8 +303,8 @@ def _run(args, pack, pack_dir, pack_name, state, only):
     diff = {"new": [], "changed": [], "removed": [], "errors": []}
     totals = {}
     wake_ids = ({f["id"] for f in pack.get("feeds", []) if f.get("wake")}
-                | {p["id"] for p in pack.get("gdelt_presets", [])
-                   if p.get("wake")}
+                | {c["id"] for c in pack.get("communities", [])
+                   if c.get("wake")}
                 | {g["id"] for g in pack.get("hunting_grounds", [])
                    if g.get("wake")})
 
@@ -353,17 +327,6 @@ def _run(args, pack, pack_dir, pack_name, state, only):
                 results.append((sid, fut.result(), None, kind))
             except Exception as e:
                 results.append((sid, None, str(e)[:200], kind))
-    if not args.skip_gdelt:
-        presets = [p for p in pack.get("gdelt_presets", [])
-                   if not only or p["id"] in only]
-        for i, p in enumerate(presets):
-            if i:
-                time.sleep(GDELT_MIN_GAP)
-            try:
-                results.append((p["id"], gdelt_entries(p), None,
-                                "gdelt"))
-            except Exception as e:
-                results.append((p["id"], None, str(e)[:200], "gdelt"))
 
     for sid, current, error, kind in results:
         if error is not None:
@@ -371,19 +334,10 @@ def _run(args, pack, pack_dir, pack_name, state, only):
                                    "error": error})
             continue
         if not current:
-            if kind == "gdelt" and not args.seed:
-                # An empty GDELT answer is a valid "nothing in the
-                # window" signal, not a format failure: keep the
-                # snapshot untouched and report its standing size.
-                old, _ = read_snapshot(snap_dir / f"{sid}.json")
-                totals[sid] = len(old)
-                continue
-            if kind != "gdelt":
-                diff["errors"].append({
-                    "source": sid, "pack": pack_name,
-                    "error": "empty parse; previous snapshot kept"})
-                continue
-        current = current or {}
+            diff["errors"].append({
+                "source": sid, "pack": pack_name,
+                "error": "empty parse; previous snapshot kept"})
+            continue
         cap = True
         if kind == "feed":
             src = next(f for f in pack["feeds"] if f["id"] == sid)

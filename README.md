@@ -112,7 +112,7 @@ Full filter and the agent operating manual: `docs/agent-guide.md`.
 
 ## Country packs
 
-Some freebies are country-specific: local providers, local communities, and local words for "free". A country pack is one country's filtered hunting kit in machine-readable form, at `packs/<continent>/<country>/`: a `pack.json` (local search terms, registry-shaped feeds, agent-leg hunting grounds, GDELT news presets) plus a short human README. Any agent can load the JSON directly, or run the shared runner, which pulls the pack's feeds and presets and diffs them exactly like the main registry:
+Some freebies are country-specific: local providers, local communities, and local words for "free". A country pack is one country's filtered hunting kit in machine-readable form, at `packs/<continent>/<country>/`: a `pack.json` (local search terms, registry-shaped feeds, local communities to follow, agent-leg hunting grounds) plus a short human README. Any agent can load the JSON directly, or run the shared runner, which pulls the pack's feeds and diffs them exactly like the main registry:
 
 ```
 python3 packs/pack_runner.py packs/europe/france

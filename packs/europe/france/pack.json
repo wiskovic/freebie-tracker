@@ -38,20 +38,6 @@
    "wake": false
   }
  ],
- "gdelt_presets": [
-  {
-   "id": "fr-gdelt-core",
-   "maxrecords": 25,
-   "query": "(\"VPS gratuit\" OR \"hébergement gratuit\" OR \"serveur gratuit\" OR \"essai gratuit\") sourcecountry:FR sourcelang:fra",
-   "timespan": "1m"
-  },
-  {
-   "id": "fr-gdelt-sans-cb",
-   "maxrecords": 25,
-   "query": "(\"VPS gratuit\" OR \"hébergement gratuit\" OR \"serveur gratuit\" OR \"essai gratuit\") (\"sans CB\" OR \"sans carte bancaire\") sourcecountry:FR sourcelang:fra",
-   "timespan": "1m"
-  }
- ],
  "hunting_grounds": [
   {
    "cadence": "on wake, or weekly",
