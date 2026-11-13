@@ -99,11 +99,25 @@ cat state/last-diff.json    # 무엇이 바뀌었는지 확인
 
 필터는 소유자의 상황으로 매개변수화됩니다(`templates/profile.example.json` 참고). 모든 소유자가 같은 벽에 막힌다고 가정하지 않습니다. 전체 필터와 에이전트 운영 매뉴얼은 `docs/agent-guide.md`에 있습니다.
 
+## 국가 팩
+
+어떤 무료 혜택은 국가마다 다릅니다. 현지 제공자, 현지 커뮤니티, 그리고 현지 언어로 "무료"를 뜻하는 단어가 다르기 때문입니다. 국가 팩은 한 국가의 선별된 사냥 도구 모음을 기계가 읽을 수 있는 형태로 만든 것으로, `packs/<대륙>/<국가>/`에 있습니다. `pack.json`(현지 검색어, 레지스트리와 같은 형태의 피드, 에이전트가 직접 도는 사냥터, GDELT 뉴스 프리셋)과 짧은 사람용 README로 구성됩니다. 어떤 에이전트든 JSON을 직접 불러오거나 공유 러너를 실행할 수 있습니다. 러너는 팩의 피드와 프리셋을 당겨 메인 레지스트리와 똑같은 방식으로 차분을 냅니다:
+
+```
+python3 packs/pack_runner.py packs/europe/france
+```
+
+첫 번째 팩은 프랑스입니다(`packs/europe/france/`). 다른 나라용 팩을 만드는 법을 포함한 팩 형식은 `packs/SCHEMA.md`에 문서화되어 있습니다.
+
 ## 디렉터리 구조
 
 ```
 tracker.py              풀러 (표준 라이브러리만 사용)
 sources.json            소스 레지스트리 (피드, 페이지, 소셜)
+packs/                  국가 팩, 나라별 선별 도구 모음
+  pack_runner.py        공유 팩 러너
+  SCHEMA.md             팩 저자를 위한 팩 형식
+  europe/france/        프랑스 팩 (pack.json + README.md)
 docs/agent-guide.md     에이전트 운영법: 루프, 필터, 보고
 docs/categories.md      카테고리 분류 체계
 docs/sources.md         지역별 주석이 달린 소스 카탈로그

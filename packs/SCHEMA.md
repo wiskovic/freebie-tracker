@@ -157,4 +157,6 @@ for the pack's intended user. Verify terms and feeds live before
 writing them down, and date any density claim in its `notes`
 ("checked YYYY-MM-DD"), because feeds drift. Keep the README a
 faithful cover of pack.json: if the two disagree, the pack is
-wrong somewhere, and an auditor will find it.
+wrong somewhere, and an auditor will find it. Write the README in
+English, the repository's base language; local search terms keep
+their native spelling, accents included, exactly as in pack.json.

@@ -44,6 +44,10 @@ Whichever pattern is used, the agent's side of the work is identical and is spec
 | How the agent gets credentials (it should not need any for the puller) | The wake rule and firehose discipline |
 | Report delivery channel | The safety filter and the report-once rule |
 
+## Country packs
+
+A deployment focused on one country can add that country's pack (`packs/<continent>/<country>/`, format in `packs/SCHEMA.md`) as a second, self-contained input layer beside the registry. The contract keeps the same shape: the pack's feeds and GDELT presets run through `packs/pack_runner.py`, which writes the same `last-run.json` and `last-diff.json` shapes into the pack's own state directory, and the same wake rule applies to its summary. The pack's terms and hunting grounds are agent-leg data, worked exactly like the registry's social sources: read them with the pack's local vocabulary, verify finds at the official provider, and pass them through the same safety filter and report-once ledger.
+
 ## Porting checklist
 
 1. Copy the repo; run `python3 tracker.py --state-dir <dir> --seed` once.
@@ -51,3 +55,4 @@ Whichever pattern is used, the agent's side of the work is identical and is spec
 3. Wire one wake pattern from the list above; test it with a seeded baseline (expected result: silence).
 4. Give the agent `docs/agent-guide.md` as its operating brief, plus the paths of the profile, inventory and reported ledger.
 5. Let it run a week before judging wake noise; demote a wake flag only on evidence, per source.
+6. For a country-specific deployment, adopt the matching country pack as well: seed its runner once, and wire its summary into the same wake pattern.

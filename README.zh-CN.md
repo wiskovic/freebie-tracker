@@ -98,11 +98,25 @@ cat state/last-diff.json    # 看看变了什么
 
 过滤条件按主人的情况参数化（见 `templates/profile.example.json`），不假设每个主人面对同样的墙。完整过滤规则和智能体操作手册在 `docs/agent-guide.md`。
 
+## 国家包
+
+有些免费资源是按国家区分的：本地服务商、本地社区，以及当地语言里表示"免费"的词。国家包是一个国家经过筛选的狩猎工具包，机器可读，位于 `packs/<大洲>/<国家>/`：一个 `pack.json`（本地搜索词、与注册表同构的订阅源、智能体亲自巡猎的场所、GDELT 新闻预设）加上一份简短的人类可读 README。任何智能体都可以直接加载这份 JSON，或者运行共享运行器；运行器会拉取包内的订阅源和预设，并像主注册表一样计算差异：
+
+```
+python3 packs/pack_runner.py packs/europe/france
+```
+
+第一个国家包是法国（`packs/europe/france/`）。包的格式，包括如何为另一个国家编写国家包，记录在 `packs/SCHEMA.md`。
+
 ## 目录结构
 
 ```
 tracker.py              拉取器（仅标准库）
 sources.json            来源注册表（订阅源、页面、社交）
+packs/                  国家包，每个国家一套筛选后的工具包
+  pack_runner.py        共享的包运行器
+  SCHEMA.md             包格式说明，给包作者
+  europe/france/        法国包（pack.json + README.md）
 docs/agent-guide.md     智能体如何运行这套系统：循环、过滤、报告
 docs/categories.md      分类体系
 docs/sources.md         来源目录与各地区备注

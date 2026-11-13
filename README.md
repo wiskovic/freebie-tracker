@@ -110,11 +110,25 @@ A listing is a **lead, not a find**. Before an agent reports anything as claimab
 
 Full filter and the agent operating manual: `docs/agent-guide.md`.
 
+## Country packs
+
+Some freebies are country-specific: local providers, local communities, and local words for "free". A country pack is one country's filtered hunting kit in machine-readable form, at `packs/<continent>/<country>/`: a `pack.json` (local search terms, registry-shaped feeds, agent-leg hunting grounds, GDELT news presets) plus a short human README. Any agent can load the JSON directly, or run the shared runner, which pulls the pack's feeds and presets and diffs them exactly like the main registry:
+
+```
+python3 packs/pack_runner.py packs/europe/france
+```
+
+The first pack is France (`packs/europe/france/`). The pack format, including how to author a pack for another country, is documented in `packs/SCHEMA.md`.
+
 ## Layout
 
 ```
 tracker.py              the puller (stdlib only)
 sources.json            source registry (feeds, pages, social)
+packs/                  country packs, one filtered kit per country
+  pack_runner.py        the shared pack runner
+  SCHEMA.md             the pack format, for pack authors
+  europe/france/        the France pack (pack.json + README.md)
 docs/agent-guide.md     how an AI agent runs this: loop, filter, reporting
 docs/categories.md      category taxonomy
 docs/sources.md         source catalog with per-region notes

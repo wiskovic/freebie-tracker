@@ -100,11 +100,25 @@ Satu entri di daftar adalah **petunjuk, bukan temuan**. Sebelum agent melaporkan
 
 Filter ini berjalan dengan parameter keadaan pemiliknya (lihat `templates/profile.example.json`), bukan dengan mengandaikan semua pemilik menghadapi tembok yang sama. Filter lengkap dan manual operasi agent ada di `docs/agent-guide.md`.
 
+## Paket negara
+
+Sebagian bansos itu spesifik negara: provider lokal, komunitas lokal, dan kata lokal buat "gratis". Paket negara adalah perangkat berburu tersaring satu negara dalam bentuk yang bisa dibaca mesin, di `packs/<benua>/<negara>/`: satu `pack.json` (istilah pencarian lokal, feed berbentuk sama seperti registry, ladang perburuan kaki agent, preset berita GDELT) plus README manusia yang singkat. Agent mana pun bisa memuat JSON nya langsung, atau menjalankan runner bersamanya, yang menarik feed dan preset paket lalu menghitung diff nya persis seperti registry utama:
+
+```
+python3 packs/pack_runner.py packs/europe/france
+```
+
+Paket pertama adalah Prancis (`packs/europe/france/`). Format paketnya, termasuk cara menulis paket buat negara lain, didokumentasikan di `packs/SCHEMA.md`.
+
 ## Struktur
 
 ```
 tracker.py              penariknya (hanya stdlib)
 sources.json            registry sumber (feed, halaman, sosial)
+packs/                  paket negara, satu perangkat tersaring per negara
+  pack_runner.py        runner paket bersama
+  SCHEMA.md             format paket, buat penulis paket
+  europe/france/        paket Prancis (pack.json + README.md)
 docs/agent-guide.md     cara agent menjalankan ini: loop, filter, laporan
 docs/categories.md      taksonomi kategori
 docs/sources.md         katalog sumber dengan catatan per wilayah
