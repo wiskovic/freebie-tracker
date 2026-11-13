@@ -149,6 +149,22 @@ pack or unknown ids, 3 another run holds the state dir's lock.
 Runs of different packs from one machine should be sequential: the
 GDELT spacing is per process, and GDELT's limit is per IP.
 
+## Outcome log (for deployments)
+
+A deployment that runs a pack keeps one append-only outcome log
+per pack, outside git, beside its other deployment records. One
+line per item the pack surfaced and the agent judged or acted on:
+
+    YYYY-MM-DD | <source id> | <item title or link> | <verdict> | <short note>
+
+Verdicts: `claimed`, `claimable` (verified at the provider,
+waiting on the owner), `noise`, `expired`, `blocked` (card,
+region, or verification wall). The log is the pack's evidence
+base: it powers the report-once discipline (an item in the log is
+never reported again) and the periodic verdict on whether the
+pack earns its place, per claimable find rather than per raw
+signal.
+
 ## Authoring rules
 
 A pack entry earns its place the same way a registry source does:
