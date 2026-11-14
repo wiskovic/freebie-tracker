@@ -13,7 +13,9 @@
 ![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 
 *실행 비용은 0입니다: 토큰도, API 키도, LLM 호출도 없습니다.
-에이전트는 변경 사항이 가치가 있을 때만 주의를 씁니다.*
+에이전트는 변경 사항이 가치가 있을 때만 주의를 씁니다.
+제로 토큰은 풀러에만 해당합니다; 연결한 에이전트는 혜택을 검증하고
+보고할 때 자체 토큰을 사용합니다.*
 
 [English](README.md) | [简体中文](README.zh-CN.md) | 한국어 | [Bahasa Indonesia](README.id.md)
 
@@ -107,7 +109,7 @@ cat state/last-diff.json    # 무엇이 바뀌었는지 확인
 python3 packs/pack_runner.py packs/europe/france
 ```
 
-첫 번째 팩은 프랑스입니다(`packs/europe/france/`). 다른 나라용 팩을 만드는 법을 포함한 팩 형식은 `packs/SCHEMA.md`에 문서화되어 있습니다.
+현재 두 개의 팩이 있습니다. 프랑스(`packs/europe/france/`)와 사우디아라비아(`packs/asia/saudi-arabia/`)입니다. 다른 나라용 팩을 만드는 법을 포함한 팩 형식은 `packs/SCHEMA.md`에 문서화되어 있습니다.
 
 ## 디렉터리 구조
 

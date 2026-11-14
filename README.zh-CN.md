@@ -13,7 +13,9 @@
 ![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 
 *运行成本为零：无 token、无 API 密钥、不调用大模型。
-智能体只在差异值得时才花注意力。*
+智能体只在差异值得时才花注意力。
+零 token 仅指拉取器本身；你接入的智能体在核实和报告发现时，
+仍会消耗它自己的 token。*
 
 [English](README.md) | 简体中文 | [한국어](README.ko.md) | [Bahasa Indonesia](README.id.md)
 
@@ -106,7 +108,7 @@ cat state/last-diff.json    # 看看变了什么
 python3 packs/pack_runner.py packs/europe/france
 ```
 
-第一个国家包是法国（`packs/europe/france/`）。包的格式，包括如何为另一个国家编写国家包，记录在 `packs/SCHEMA.md`。
+目前已有两个国家包：法国（`packs/europe/france/`）和沙特阿拉伯（`packs/asia/saudi-arabia/`）。包的格式，包括如何为另一个国家编写国家包，记录在 `packs/SCHEMA.md`。
 
 ## 目录结构
 

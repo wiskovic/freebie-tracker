@@ -13,7 +13,9 @@ and wakes your agent only for finds actually worth claiming.**
 ![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 
 *The puller costs nothing to run: no tokens, no API keys, no LLM calls.
-The agent spends attention only when the diff is worth it.*
+The agent spends attention only when the diff is worth it.
+Zero-token covers the puller alone; the agent you connect still spends
+its own tokens when it verifies and reports a find.*
 
 English | [简体中文](README.zh-CN.md) | [한국어](README.ko.md) | [Bahasa Indonesia](README.id.md)
 
@@ -118,7 +120,7 @@ Some freebies are country-specific: local providers, local communities, and loca
 python3 packs/pack_runner.py packs/europe/france
 ```
 
-The first pack is France (`packs/europe/france/`). The pack format, including how to author a pack for another country, is documented in `packs/SCHEMA.md`.
+Two packs ship today: France (`packs/europe/france/`) and Saudi Arabia (`packs/asia/saudi-arabia/`). The pack format, including how to author a pack for another country, is documented in `packs/SCHEMA.md`.
 
 ## Layout
 

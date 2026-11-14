@@ -13,7 +13,9 @@ perubahan, dan hanya membangunkan agent saat ada temuan yang benar-benar layak d
 ![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 
 *Penariknya nol biaya jalan: tanpa token, tanpa API key, tanpa panggilan LLM.
-Agent hanya memakai perhatian saat diff-nya memang layak.*
+Agent hanya memakai perhatian saat diff-nya memang layak.
+Zero-token hanya mencakup penariknya saja; agent yang kamu sambungkan
+tetap memakai tokennya sendiri saat memverifikasi dan melaporkan temuan.*
 
 [English](README.md) | [简体中文](README.zh-CN.md) | [한국어](README.ko.md) | Bahasa Indonesia
 
@@ -108,7 +110,7 @@ Sebagian bansos itu spesifik negara: provider lokal, komunitas lokal, dan kata l
 python3 packs/pack_runner.py packs/europe/france
 ```
 
-Paket pertama adalah Prancis (`packs/europe/france/`). Format paketnya, termasuk cara menulis paket buat negara lain, didokumentasikan di `packs/SCHEMA.md`.
+Dua paket yang sudah terbit: Prancis (`packs/europe/france/`) dan Arab Saudi (`packs/asia/saudi-arabia/`). Format paketnya, termasuk cara menulis paket buat negara lain, didokumentasikan di `packs/SCHEMA.md`.
 
 ## Struktur
 
