@@ -13,7 +13,9 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile check
-        run: python -m py_compile tracker.py
+        run: python -m py_compile tracker.py packs/pack_runner.py packs/lint_packs.py
       - name: Unit and integration tests
         run: python -m unittest discover -s tests -v
+      - name: Pack lint
+        run: python packs/lint_packs.py
         
