@@ -13,6 +13,13 @@ Each pack folder holds two files:
 - `README.md`, the human cover: the same material in prose, for a
   person deciding whether the pack fits them.
 
+A pack folder may also hold `GUESSES.md`, a third file that
+records every point where the author had to choose because the
+schema did not answer the question, with what was chosen and why,
+dated. It is documentation only: the runner and linter never read
+it, and it is never required. Its guesses are the raw material for
+the next schema revision.
+
 One shared runner executes every pack's machine layers:
 
     python3 packs/pack_runner.py packs/<continent>/<country>
@@ -37,6 +44,13 @@ Required: `code` (ISO 3166-1 alpha-2, e.g. `FR`), `name`,
 `languages` (non-empty list of ISO 639-1 codes). Nothing else: any
 field no code reads is dead data and does not belong in a pack.
 
+List every language the agent must read to search and verify the
+pack's sources, not only the country's official language(s).
+Example: Saudi Arabia lists `["ar", "en"]` because the communities
+mix Arabic posts with English tool names and product pages, while
+France lists `["fr"]` only because its sources are French. Keep
+the list to languages actually used in the pack's sources.
+
 ### terms
 
 An object of string lists, grouped by role. Groups seen in packs so
@@ -50,6 +64,15 @@ vocabulary for the agent leg: they are how the agent searches the
 pack's communities and hunting grounds in the local language; the
 runner does not filter by them.
 
+Find a country's `no_card_markers` from live provider pages, not
+by translating English: read signup and FAQ pages in the local
+language and take the 1-3 phrasings actually used there for "no
+credit card required" / "no payment method" / "no fees", most
+precise first, keeping spelling variants people really type (e.g.
+Saudi `بدون بطاقة ائتمانية`, `بدون بطاقة`, `بدون رسوم`, with both
+`مجاناً` and `مجانا` kept in community phrases). If no local
+phrasing exists, say so in GUESSES.md instead of inventing one.
+
 ### feeds
 
 Registry-shaped entries, same fields and meanings as `sources.json`:
@@ -61,6 +84,14 @@ optional `name`, `categories`, `wake`, `notes`, `item_url_pattern`,
 non-curated feeds at the tracker's item cap with continuity, and
 diffs them like the main registry.
 
+`feeds` may be an empty list (`"feeds": []`) when no stable
+machine feed for the country exists. Do not invent a feed to fill
+it, and do not fall back to a news feed: packs deliberately carry
+no news-index layer. In that case the machine layer is a watched
+hunting ground (a `watch` block on a server-rendered listing),
+and the pack's README must say so in its "Machine feeds" section
+with the check date.
+
 ### communities
 
 The grassroots layer, and the pack's center of gravity: specific
@@ -70,8 +101,16 @@ the way it reads the main registry's social sources. Required:
 `id`, `platform` (one of `x`, `discord`, `telegram`, `facebook`,
 `forum`, `other`), `name`, `url` (the profile, server, channel,
 or group address), `focus` (what surfaces there and why it earns
-attention, in one or two sentences), `cadence` (how often it is
-worth reading, in words). Optional: `wake` (default false).
+attention, in one or two sentences), `cadence`. Optional: `wake`
+(default false).
+
+`cadence` uses one of: `daily`, `weekly`, `monthly`, `quarterly`,
+`on wake`, or `on wake, or weekly`. `on wake` means read it only
+when another source in the pack wakes the agent; `on wake, or
+weekly` means read it on wake, and at least weekly even without a
+wake. Do not invent other cadence words; if none fits, pick the
+closest and explain the real rhythm in the entry's `how` or
+`focus` text. The same vocabulary applies to hunting grounds.
 
 Communities are agent-leg data: the runner never pulls them.
 Verify each one live before writing it down, under the same
@@ -97,8 +136,8 @@ The agent leg's targets: places an agent reads the way it reads the
 main registry's social sources. Required: `id`, `kind` (one of
 `listing`, `site`, `directory`, `community`), `name`, `url`, `how`
 (how the agent works the ground and verifies a find), `cadence`
-(how often it is worth reading, in words). Optional: `wake`
-(default false) and `watch`.
+(the fixed vocabulary defined under Communities above). Optional:
+`wake` (default false) and `watch`.
 
 `watch` is for grounds whose listing page is server-rendered HTML:
 the runner then diffs the page's matching links between runs.
@@ -205,3 +244,68 @@ faithful cover of pack.json: if the two disagree, the pack is
 wrong somewhere, and an auditor will find it. Write the README in
 English, the repository's base language; local search terms keep
 their native spelling, accents included, exactly as in pack.json.
+
+### Research protocol
+
+How a pack is researched, in order. This protocol is distilled
+from the France harvest and the Saudi adoption test; follow it so
+two authors produce the same quality of pack.
+
+1. Map the country's grassroots surfaces first: search live, in
+   the local language, for where free tiers, trials, and credits
+   actually surface (hunter accounts, local forums, chat groups,
+   provider Discords, community boards). News coverage is not a
+   surface. Date every structural claim you will later write into
+   `about` or `local_patterns`.
+2. Build the term groups from live material, never from
+   translation: core nouns from real offer pages, no-card markers
+   from provider signup and FAQ pages (see Terms), community
+   phrases in the spellings people actually type, negative
+   markers from the dominant local retail meaning of "free".
+3. Test every candidate source live before judging it: pull the
+   feed, open the profile or page, read recent items. A density
+   claim needs a counted sample and a check date.
+4. Sort each admitted source into the block that matches how it
+   is consumed: a pullable feed, a community the agent follows, a
+   ground the agent works. A server-rendered listing gets a
+   `watch` block with a pattern matched against each href;
+   a JavaScript-rendered one gets none, and its `how` says so.
+5. Record every rejection, with its reason, in research notes
+   outside the pack; a pack never carries a checked-and-rejected
+   list. Record every question the schema does not answer in the
+   pack's GUESSES.md, with the choice made and why, dated.
+6. Finish mechanically, not by feel: the pack lints clean, the
+   conformance tests pass, and the machine layer seed-runs with
+   no failures. A pack that has not passed all three is a draft,
+   not a pack.
+
+### Editorial gate
+
+The admission test as criteria. A source enters a pack only if
+every applicable point holds; when one fails, the source is
+rejected or the pack text carries the constraint openly.
+
+- Claimable shape: what the source surfaces can be acted on,
+  monitored, and claimed by the pack's intended user. Registry
+  categories include `education` and `gov-programs`: a real free
+  allocation that is claimed by applying (a bootcamp, a national
+  programme) passes this point.
+- Verified live: the author opened the source during this
+  research round and saw the claimed content. A visibly dormant
+  source (no posts for a year or more) is refused.
+- Not retail noise: a source whose dominant output is price
+  tracking, consumer discounts, free delivery, or paid-plan
+  add-ons (free SSL, free support, free migration on a paid
+  plan) is refused. That dominance is also where the pack's
+  negative markers come from.
+- No invented layers: no news feed to fill the machine layer,
+  and no feed at all when none is stable. An empty block with a
+  dated explanation beats a padded one.
+- Eligibility honesty: when a source's offers mostly require a
+  local ID, phone number, or residency, that constraint is
+  written into the entry's `focus` or `how`, or into
+  `local_patterns`, so the deployment's safety filter can act on
+  it.
+- Right block: a specific provider offer with an enrolment
+  status that can change is a hunting ground, not a local
+  pattern; patterns are structural facts only.
