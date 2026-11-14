@@ -1,0 +1,126 @@
+{
+ "about": "Saudi Arabia's freebie surface is community-first: Telegram channels and deal accounts share free courses, bootcamps and codes, while the largest allocations are government training programmes and a national Adobe/Firefly access deal. Most worthwhile offers are mobile-first and often need a Saudi ID or residency, so the no-card/no-fees markers matter as much as the local word for free.",
+ "communities": [
+  {
+   "cadence": "monthly",
+   "focus": "Announces technical bootcamps, challenges and courses from Saudi government and private providers. Posting comes in bursts around programme windows, with silent weeks between (checked 2026-11-14: the newest visible post was dated 2026-10-12). Recent visible posts matched that description; many carry their free terms in image flyers rather than text.",
+   "id": "sa-saudicamp",
+   "name": "قناة المعسكرات والتحديات",
+   "platform": "telegram",
+   "url": "https://t.me/saudicamp_channel"
+  }
+ ],
+ "country": {
+  "code": "SA",
+  "languages": [
+   "ar",
+   "en"
+  ],
+  "name": "Saudi Arabia"
+ },
+ "feeds": [],
+ "hunting_grounds": [
+  {
+   "cadence": "on wake, or weekly",
+   "how": "Read the upcoming and past event lists, open each newly surfaced event, and verify that registration is still open; check the cost on the event page, because the site states no prices and an event must never be assumed free. The listing is server-rendered, so the runner diffs its event links.",
+   "id": "sa-sdc-events",
+   "kind": "listing",
+   "name": "Saudi Developers Community (SDC) events",
+   "url": "https://www.sdcsa.org/events",
+   "wake": true,
+   "watch": {
+    "link_pattern": "events/[a-z0-9-]+$"
+   }
+  },
+  {
+   "cadence": "weekly",
+   "how": "Filter to open registration and open each bootcamp card. Programmes are government-funded and are consistently described as free and fully supported, but the listing is JavaScript-rendered and its cards could not be sampled by any route available when this pack was verified, so confirm each programme's cost on its own page before reporting it; never assume. The runner cannot diff this listing; use a browser or the reader.",
+   "id": "sa-tuwaiq",
+   "kind": "site",
+   "name": "Tuwaiq Academy open bootcamps",
+   "url": "https://tuwaiq.edu.sa/bootcamps?only_open=true"
+  },
+  {
+   "cadence": "weekly",
+   "how": "Read the programme catalogue. 'التسجيل مغلق' means registration is closed; open cards lead to the current application. Programmes are government-funded, but eligibility, location and dates vary per cohort.",
+   "id": "sa-sdaia",
+   "kind": "site",
+   "name": "SDAIA Academy programmes and camps",
+   "url": "https://sdaia.gov.sa/ar/Sectors/BuildingCapacity/academy/bootcamps/Pages/default.aspx"
+  },
+  {
+   "cadence": "monthly",
+   "how": "Check the offer page and its FAQ. Eligible Saudi citizens and residents aged 13 and over get 12 months of Firefly Standard plus Adobe Express Premium with 2,000 generative credits per month. Registration is an interest list only (re-checked 2026-11-14: enrolment not yet open) and no payment method is required to register. Verify the current enrolment status before reporting it as claimable.",
+   "id": "sa-adobe-national-access",
+   "kind": "site",
+   "name": "Adobe National Access Programme (Saudi Arabia)",
+   "url": "https://www.adobe.com/sa_en/products/firefly/partner-models/humain.html"
+  },
+  {
+   "cadence": "monthly",
+   "how": "The MCIT service page states the cost as Free and the eligibility as a Saudi applicant with English proficiency, national ID and admission selection. Registration runs through the Saudi Digital Academy platform (sda.mcit.gov.sa), which did not answer when re-checked on 2026-11-14, so confirm the current link on the MCIT page and open it in a browser.",
+   "id": "sa-sda-bootcamps",
+   "kind": "site",
+   "name": "Saudi Digital Academy programmes and camps",
+   "url": "https://mcit.gov.sa/en/services/sda-bootcamps"
+  },
+  {
+   "cadence": "weekly",
+   "how": "The group page is server-rendered and carries its event links as plain hrefs, so the runner diffs them (the /events/ listing page does not expose event hrefs). A weekly two-hour AI builders' meetup in Riyadh, running since July 2025; attendance is free community value rather than a claimable allocation. Open each new event page to confirm the session topic and whether registration is needed.",
+   "id": "sa-sabtiah",
+   "kind": "listing",
+   "name": "Sabtiah, Riyadh's AI Circle (Meetup)",
+   "url": "https://www.meetup.com/sabtiah/",
+   "watch": {
+    "link_pattern": "sabtiah/events/\\d+/"
+   }
+  }
+ ],
+ "local_patterns": [
+  "Saudi freebies surface first on Telegram deal and training channels; there is no dedicated Saudi freebie board with a stable machine feed (re-verified 2026-11-14: the largest Arabic hosting forum is read-only with posting frozen, still carrying its read-only notice that day, and its offers sections ban free offers by rule; the legacy forums are dormant or carry no offers section).",
+  "The country's largest free technical allocations are government training programmes (Tuwaiq Academy, SDAIA Academy, Saudi Digital Academy), not product free tiers; they open and close on application windows.",
+  "'بدون بطاقة ائتمانية' (no credit card) and 'بدون رسوم' (no fees) are the precision markers for a trial that passes a no-card owner filter.",
+  "Many claimable offers require a Saudi mobile number, national ID or residency; an owner without Saudi verification should treat them as blocked.",
+  "Arabic deal search is dominated by retail noise: 'الشحن مجاني' (free shipping), 'توصيل مجاني' (free delivery), 'كوبون خصم' (discount coupon) and 'تقسيط' (instalments) mark commerce, not freebies."
+ ],
+ "terms": {
+  "community_phrases": [
+   "عروض مجانية",
+   "مجاناً بالكامل",
+   "مجانا بالكامل",
+   "فرصة مجانية"
+  ],
+  "core": [
+   "استضافة مجانية",
+   "سيرفر مجاني",
+   "خادم مجاني",
+   "تجربة مجانية",
+   "دورة مجانية",
+   "معسكر مجاني",
+   "أدوات مجانية"
+  ],
+  "credit": [
+   "رصيد مجاني",
+   "كريدت مجاني",
+   "أرصدة مجانية",
+   "قسيمة مجانية"
+  ],
+  "negative_markers": [
+   "الشحن مجاني",
+   "توصيل مجاني",
+   "كوبون خصم",
+   "تقسيط"
+  ],
+  "no_card_markers": [
+   "بدون بطاقة ائتمانية",
+   "بدون بطاقة",
+   "بدون رسوم"
+  ],
+  "umbrella": [
+   "عروض",
+   "خصومات",
+   "كود خصم"
+  ]
+ },
+ "version": 1
+}

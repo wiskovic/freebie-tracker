@@ -1,0 +1,139 @@
+{
+ "about": "South Korea's freebie surface is split between government AI and startup programmes and domestic cloud providers that advertise credits in Korean. Cloud credits often require payment-method registration, while DashCloud and Dothome offer card-free hosting with mobile-phone or identity verification. Grassroots finds concentrate in large IT forums such as Clien, where retail deal noise is heavy and free digital offers appear as occasional posts.",
+ "communities": [
+  {
+   "cadence": "daily",
+   "focus": "Korea's largest general IT forum; its 알뜰구매 board carries occasional limited-time free digital licenses, app giveaways, and provider promotions alongside heavy retail discount noise. Direct access worked from a datacenter address when re-checked on 2026-11-14; if a block page appears, read it through a browser or reader. Verify every offer at the provider.",
+   "id": "kr-clien-jirum",
+   "name": "클리앙 알뜰구매",
+   "platform": "forum",
+   "url": "https://www.clien.net/service/board/jirum"
+  }
+ ],
+ "country": {
+  "code": "KR",
+  "languages": [
+   "ko",
+   "en"
+  ],
+  "name": "South Korea"
+ },
+ "feeds": [],
+ "hunting_grounds": [
+  {
+   "cadence": "weekly",
+   "how": "Read the latest announcements, open any AI, GPU, cloud-voucher, or startup-support item, and verify eligibility and deadlines on the NIPA detail page and the operator's site. The listing is server-rendered; the watch pattern matches its relative /home/2-2/<id> hrefs.",
+   "id": "kr-nipa-business",
+   "kind": "listing",
+   "name": "NIPA business announcements",
+   "url": "https://www.nipa.kr/home/2-2",
+   "wake": true,
+   "watch": {
+    "link_pattern": "^/home/2-2/\\d+"
+   }
+  },
+  {
+   "cadence": "monthly",
+   "how": "Open the pricing page and confirm the Free plan terms: lifetime free, no payment information, 256MB RAM, 1GB persistent storage, 10GB monthly traffic, and one project. Signup requires one-time mobile-phone verification; recheck the current open-beta terms before claiming.",
+   "id": "kr-dashcloud-free",
+   "kind": "site",
+   "name": "DashCloud Free plan",
+   "url": "https://dashcloud.kr/pricing"
+  },
+  {
+   "cadence": "monthly",
+   "how": "Read the free-hosting page, then check the signup agreement for current limits and identity checks. The free hosting stays free only while an extension application is filed every 6 months; miss the renewal window and the account is blocked, data is held for 14 days, and recovery can carry fees (provider's free-hosting page, checked 2026-11-14). Real-name or identity verification may be requested.",
+   "id": "kr-dothome-free-hosting",
+   "kind": "site",
+   "name": "Dothome free hosting",
+   "url": "https://www.dothome.co.kr/web/free/index.php"
+  },
+  {
+   "cadence": "monthly",
+   "how": "Confirm the current new-signup credit amount and validity, then register a payment method to apply. The offer was 100,000 KRW in discount credit valid for three months; credits cannot be used on already-free or marketplace products.",
+   "id": "kr-naver-cloud-credit",
+   "kind": "site",
+   "name": "NAVER Cloud new-signup credit",
+   "url": "https://www.ncloud.com/main/creditEvent"
+  },
+  {
+   "cadence": "monthly",
+   "how": "Check the new-signup support programme and apply within three months of signup. The offer was 300,000 KRW in credit; payment-method registration and approval are required, so check the FAQ for exceptions before treating it as card-free.",
+   "id": "kr-kakao-cloud-credit",
+   "kind": "site",
+   "name": "KakaoCloud new-signup credit",
+   "url": "https://kakaocloud.com/business/support/new"
+  },
+  {
+   "cadence": "monthly",
+   "how": "Read the API pricing page and confirm the free-run allowance for the document-agent product you need. Each agent included 10 free runs with no credit card required when checked; usage beyond that is metered.",
+   "id": "kr-upstage-api",
+   "kind": "site",
+   "name": "Upstage document-agent API free runs",
+   "url": "https://www.upstage.ai/pricing/api"
+  },
+  {
+   "cadence": "weekly",
+   "how": "Read the open-announcement listing and open items through the site's go_view action; detail links are JavaScript calls rather than hrefs, so this ground has no watch block. Verify eligibility, deadline, and application path on K-Startup and the programme operator's page.",
+   "id": "kr-kstartup-ongoing",
+   "kind": "listing",
+   "name": "K-Startup open business announcements",
+   "url": "https://www.k-startup.go.kr/web/contents/bizpbanc-ongoing.do"
+  }
+ ],
+ "local_patterns": [
+  "Cloud credits are the main domestic freebie shape: NAVER Cloud and KakaoCloud both advertised new-signup credits when checked on 2026-11-14, and both required payment-method registration.",
+  "Card-free hosting exists but is identity-gated: DashCloud requires one-time mobile-phone verification for its lifetime Free plan, and Dothome may request real-name or identity verification at signup.",
+  "Government support is application-based and Korean-language: NIPA and K-Startup publish AI, GPU, cloud-voucher, and startup programmes with eligibility rules that can require a Korean business or resident status.",
+  "K-Startup detail links use javascript:go_view(...), so its listing is readable but not watchable; NIPA's /home/2-2 listing uses relative hrefs and is the pack's machine watch.",
+  "Clien's 알뜰구매 board is the most accessible large IT forum for free digital offers, but retail discounts dominate. Direct access worked when re-checked on 2026-11-14; a browser or reader is the fallback if a block page appears.",
+  "Search Naver first for Korean offers: Google and Bing returned stale or unrelated results during research, while Naver surfaced current provider and community pages.",
+  "No stable Korean machine feed for freebies was found; the machine layer is the NIPA listing watch, checked 2026-11-14."
+ ],
+ "terms": {
+  "community_phrases": [
+   "무료배포",
+   "정보공유",
+   "무료로 시작",
+   "0원"
+  ],
+  "core": [
+   "무료 호스팅",
+   "무료호스팅",
+   "무료 크레딧",
+   "무료 체험",
+   "평생 무료",
+   "무료 플랜",
+   "무료 서버",
+   "GPU 지원",
+   "AI 바우처",
+   "클라우드 바우처",
+   "스타트업 지원"
+  ],
+  "credit": [
+   "무료 크레딧",
+   "할인 크레딧",
+   "크레딧 지원",
+   "100,000 원의 할인 크레딧",
+   "30만원 상당의 크레딧"
+  ],
+  "negative_markers": [
+   "무료배송",
+   "쿠팡"
+  ],
+  "no_card_markers": [
+   "결제 정보 없이",
+   "결제 정보 없음",
+   "no credit card required"
+  ],
+  "umbrella": [
+   "핫딜",
+   "할인",
+   "이벤트",
+   "쿠폰",
+   "공구",
+   "특가"
+  ]
+ },
+ "version": 1
+}

@@ -108,7 +108,7 @@ cat state/last-diff.json    # 看看变了什么
 python3 packs/pack_runner.py packs/europe/france
 ```
 
-目前已有两个国家包：法国（`packs/europe/france/`）和沙特阿拉伯（`packs/asia/saudi-arabia/`）。包的格式，包括如何为另一个国家编写国家包，记录在 `packs/SCHEMA.md`。
+目前已有三个国家包：法国（`packs/europe/france/`）、沙特阿拉伯（`packs/asia/saudi-arabia/`）和韩国（`packs/asia/south-korea/`）。包的格式，包括如何为另一个国家编写国家包，记录在 `packs/SCHEMA.md`。
 
 ## 目录结构
 
@@ -119,6 +119,8 @@ packs/                  国家包，每个国家一套筛选后的工具包
   pack_runner.py        共享的包运行器
   SCHEMA.md             包格式说明，给包作者
   europe/france/        法国包（pack.json + README.md）
+  asia/saudi-arabia/    沙特阿拉伯包（pack.json + README.md）
+  asia/south-korea/     韩国包（pack.json + README.md）
 docs/agent-guide.md     智能体如何运行这套系统：循环、过滤、报告
 docs/categories.md      分类体系
 docs/sources.md         来源目录与各地区备注

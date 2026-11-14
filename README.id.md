@@ -110,7 +110,7 @@ Sebagian bansos itu spesifik negara: provider lokal, komunitas lokal, dan kata l
 python3 packs/pack_runner.py packs/europe/france
 ```
 
-Dua paket yang sudah terbit: Prancis (`packs/europe/france/`) dan Arab Saudi (`packs/asia/saudi-arabia/`). Format paketnya, termasuk cara menulis paket buat negara lain, didokumentasikan di `packs/SCHEMA.md`.
+Tiga paket yang sudah terbit: Prancis (`packs/europe/france/`), Arab Saudi (`packs/asia/saudi-arabia/`), dan Korea Selatan (`packs/asia/south-korea/`). Format paketnya, termasuk cara menulis paket buat negara lain, didokumentasikan di `packs/SCHEMA.md`.
 
 ## Struktur
 
@@ -121,6 +121,8 @@ packs/                  paket negara, satu perangkat tersaring per negara
   pack_runner.py        runner paket bersama
   SCHEMA.md             format paket, buat penulis paket
   europe/france/        paket Prancis (pack.json + README.md)
+  asia/saudi-arabia/    paket Arab Saudi (pack.json + README.md)
+  asia/south-korea/     paket Korea Selatan (pack.json + README.md)
 docs/agent-guide.md     cara agent menjalankan ini: loop, filter, laporan
 docs/categories.md      taksonomi kategori
 docs/sources.md         katalog sumber dengan catatan per wilayah

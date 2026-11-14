@@ -1,5 +1,6 @@
 {
- "about": "Filtered lens on France for freebie hunting: small hosting providers (hebergeurs) announce trials on their own sites and Discord servers; the precision marker for a claimable no-card trial is 'sans CB'. There is no feedable French freebie board; the machine layer is thin and the community layer carries the depth.",
+ "about": "Filtered lens on France for freebie hunting: small hosting providers (hebergeurs) announce trials on their own sites and Discord servers; the precision marker for a claimable no-card trial is 'sans CB'. No feedable French freebie board was found in the scouting or the re-hunt (2026-11-14); the machine layer is thin and the depth sits in the agent-leg hunting grounds.",
+ "communities": [],
  "country": {
   "code": "FR",
   "languages": [
@@ -16,7 +17,7 @@
    "format": "rss",
    "id": "fr-korben",
    "name": "Korben",
-   "notes": "France's largest tech discovery blog for web tools and services; free tools and SaaS coverage is routine (8 of the 23 most recent items mention 'gratuit', checked 2026-11-12). Firehose: read on wake, never a trigger.",
+   "notes": "French tech discovery blog for web tools and services; free tools and SaaS coverage is routine (7 of the 17 most recent items mention 'gratuit', checked 2026-11-14). Firehose: read on wake, never a trigger.",
    "region": "fr",
    "tier": "firehose",
    "type": "feed",
@@ -30,7 +31,7 @@
    "format": "rss",
    "id": "fr-sebsauvage",
    "name": "Sebsauvage, Liens en vrac",
-   "notes": "One-curator link blog running for decades. Low freebie density (about 4 explicit free-service signals in 50 items, checked 2026-11-12) but high curation quality, occasionally exactly on category (for example free DDNS services). Firehose.",
+   "notes": "One-curator link blog. Low freebie density (3 of the 50 items in its feed mention 'gratuit', checked 2026-11-14) but high curation quality, occasionally exactly on category (for example free DDNS services). Firehose.",
    "region": "fr",
    "tier": "firehose",
    "type": "feed",
@@ -41,7 +42,7 @@
  "hunting_grounds": [
   {
    "cadence": "on wake, or weekly",
-   "how": "The habitat of small French hebergeurs: they announce free tiers and trials inside their Discord servers, and the listing is the discovery door. Read the listing, open newly surfaced hosts, and verify any offer at the host's own site before reporting it. The listing page is JavaScript-rendered, so the runner cannot diff it; this ground belongs to the agent leg (browser or search), exactly like the main registry's non-pullable sources. Spotted there while scouting (2026-11-12): Zira Hosting advertising free offers, PixelHorizons 100% free community hosting.",
+   "how": "The habitat of small French hebergeurs: they announce free tiers and trials inside their Discord servers, and the listing is the discovery door. Read the listing, open newly surfaced hosts, and verify any offer at the host's own site before reporting it. The listing page is JavaScript-rendered, so the runner cannot diff it; this ground belongs to the agent leg (browser or search), exactly like the main registry's non-pullable sources. Spotted on the French-filtered listing (checked 2026-11-14): PixelHorizons 100% free community hosting, UniHeberg's 24h free trial 'sans carte bancaire', ARTAUN's 7-day free trial, ASTRALHOST's 3 free days, Vibes Hosting's 24H offered. Listings rotate: Zira Hosting's 'des offres gratuites pour commencer' was spotted on the wider vps tag in 2026-11, so re-spot rather than assume a name is still there.",
    "id": "fr-disboard-vps",
    "kind": "listing",
    "name": "DISBOARD Discord servers, tag vps, French filter",

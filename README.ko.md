@@ -109,7 +109,7 @@ cat state/last-diff.json    # 무엇이 바뀌었는지 확인
 python3 packs/pack_runner.py packs/europe/france
 ```
 
-현재 두 개의 팩이 있습니다. 프랑스(`packs/europe/france/`)와 사우디아라비아(`packs/asia/saudi-arabia/`)입니다. 다른 나라용 팩을 만드는 법을 포함한 팩 형식은 `packs/SCHEMA.md`에 문서화되어 있습니다.
+현재 세 개의 팩이 있습니다. 프랑스(`packs/europe/france/`), 사우디아라비아(`packs/asia/saudi-arabia/`), 한국(`packs/asia/south-korea/`)입니다. 다른 나라용 팩을 만드는 법을 포함한 팩 형식은 `packs/SCHEMA.md`에 문서화되어 있습니다.
 
 ## 디렉터리 구조
 
@@ -120,6 +120,8 @@ packs/                  국가 팩, 나라별 선별 도구 모음
   pack_runner.py        공유 팩 러너
   SCHEMA.md             팩 저자를 위한 팩 형식
   europe/france/        프랑스 팩 (pack.json + README.md)
+  asia/saudi-arabia/    사우디아라비아 팩 (pack.json + README.md)
+  asia/south-korea/     한국 팩 (pack.json + README.md)
 docs/agent-guide.md     에이전트 운영법: 루프, 필터, 보고
 docs/categories.md      카테고리 분류 체계
 docs/sources.md         지역별 주석이 달린 소스 카탈로그

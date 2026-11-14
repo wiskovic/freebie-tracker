@@ -120,7 +120,7 @@ Some freebies are country-specific: local providers, local communities, and loca
 python3 packs/pack_runner.py packs/europe/france
 ```
 
-Two packs ship today: France (`packs/europe/france/`) and Saudi Arabia (`packs/asia/saudi-arabia/`). The pack format, including how to author a pack for another country, is documented in `packs/SCHEMA.md`.
+Three packs ship today: France (`packs/europe/france/`), Saudi Arabia (`packs/asia/saudi-arabia/`) and South Korea (`packs/asia/south-korea/`). The pack format, including how to author a pack for another country, is documented in `packs/SCHEMA.md`.
 
 ## Layout
 
@@ -131,6 +131,8 @@ packs/                  country packs, one filtered kit per country
   pack_runner.py        the shared pack runner
   SCHEMA.md             the pack format, for pack authors
   europe/france/        the France pack (pack.json + README.md)
+  asia/saudi-arabia/    the Saudi Arabia pack (pack.json + README.md)
+  asia/south-korea/     the South Korea pack (pack.json + README.md)
 docs/agent-guide.md     how an AI agent runs this: loop, filter, reporting
 docs/categories.md      category taxonomy
 docs/sources.md         source catalog with per-region notes
