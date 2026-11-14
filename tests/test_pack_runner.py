@@ -41,6 +41,13 @@ LIST_REL = b'<a href="/server/333">HostThree</a>'
 LIST_SQ = b"<a href='https://disboard.org/server/444'>HostFour</a>"
 
 
+def rss_many(n):
+    items = "".join(
+        f"<item><title>Item {i}</title>"
+        f"<link>https://x.test/{i}</link></item>" for i in range(n))
+    return ("<rss><channel>" + items + "</channel></rss>").encode()
+
+
 def base_pack():
     return {
         "version": 1,
@@ -145,6 +152,15 @@ class PackRunnerCase(unittest.TestCase):
         self.write_pack(pack)
         self.assertEqual(self.run_runner("--seed"), 0)
         self.assertEqual(self.summary()["sources_ok"], 2)
+
+    def test_count_drop_warns_on_collapse(self):
+        self.data["feed"] = rss_many(20)
+        self.assertEqual(self.run_runner("--seed"), 0)
+        self.data["feed"] = rss_many(5)
+        self.assertEqual(self.run_runner(), 0)
+        self.assertEqual(self.summary()["count_warnings"],
+                         [{"source": "fr-feed", "pack": "france",
+                           "previous": 20, "current": 5}])
 
     # failure paths
 

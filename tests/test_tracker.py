@@ -26,6 +26,13 @@ RSS_V2 = (b"<rss><channel>"
           b"</channel></rss>")
 
 
+def rss_many(n):
+    items = "".join(
+        f"<item><title>Item {i}</title>"
+        f"<link>https://x.test/{i}</link></item>" for i in range(n))
+    return ("<rss><channel>" + items + "</channel></rss>").encode()
+
+
 def make_registry(state, source_id="demo"):
     src = {"id": source_id, "name": "Demo", "type": "feed",
            "format": "rss", "url": "https://x.test/feed",
@@ -56,6 +63,22 @@ class MainRunCase(unittest.TestCase):
 
     def summary(self):
         return json.loads((self.state / "last-run.json").read_text())
+
+    def test_count_drop_warns_on_collapse(self):
+        self.feed["data"] = rss_many(20)
+        self.assertEqual(self.run_main("--seed"), 0)
+        self.feed["data"] = rss_many(5)
+        self.assertEqual(self.run_main(), 0)
+        self.assertEqual(self.summary()["count_warnings"],
+                         [{"source": "demo", "previous": 20,
+                           "current": 5}])
+
+    def test_count_drop_silent_above_half(self):
+        self.feed["data"] = rss_many(20)
+        self.assertEqual(self.run_main("--seed"), 0)
+        self.feed["data"] = rss_many(12)
+        self.assertEqual(self.run_main(), 0)
+        self.assertEqual(self.summary()["count_warnings"], [])
 
     def test_changed_fires_on_title_change(self):
         self.assertEqual(self.run_main("--seed"), 0)
@@ -95,6 +118,16 @@ class MainRunCase(unittest.TestCase):
         self.state.mkdir(parents=True, exist_ok=True)
         (self.state / "run.lock").write_text("1 1")
         self.assertEqual(self.run_main(), 3)
+
+
+class CountDroppedCase(unittest.TestCase):
+    def test_boundaries(self):
+        self.assertFalse(tracker.count_dropped(9, 0))
+        self.assertFalse(tracker.count_dropped(10, 5))
+        self.assertTrue(tracker.count_dropped(10, 4))
+        self.assertFalse(tracker.count_dropped(20, 10))
+        self.assertTrue(tracker.count_dropped(20, 9))
+        self.assertTrue(tracker.count_dropped(131, 40))
 
 
 class FetchAndEntryCase(unittest.TestCase):

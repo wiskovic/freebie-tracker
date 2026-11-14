@@ -17,12 +17,14 @@ freebie-tracker is agent-agnostic by construction. The puller (`tracker.py`) rea
 `last-run.json`, one line of truth per run:
 
 ```json
-{"sources_ok": 17, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "...": "..."}, "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
+{"sources_ok": 17, "sources_failed": [], "items_per_source": {"baipiaoji": 131, "...": "..."}, "count_warnings": [], "new_count": 22, "changed_count": 1, "removed_count": 22, "wake_new_count": 2, "wake_changed_count": 1}
 ```
 
 `last-diff.json`, the full diff: per source, the new, changed and removed entries, each with title, link, extra text and category tags, plus the wake counts. A source whose parse comes back empty is treated as failed: its previous snapshot is kept and no removals are reported for it.
 
 The wake rule is the whole economy of the system: an agent run is justified only when `wake_new_count + wake_changed_count` is greater than zero. Firehose sources are diffed and stored but never counted toward the wake.
+
+`count_warnings` is the degraded-parse signal: it names each source whose item count fell to fewer than half of its previous snapshot, judged only from a baseline of at least 10 items. A warning means the source probably changed shape and only some of its entries still extract, not that its offers died. It never counts toward the wake; the agent inspects a warned source on a later pass and repairs or replaces it if the drop is structural. The pack runner emits the same field in its summary.
 
 ## Waking the agent, per platform
 

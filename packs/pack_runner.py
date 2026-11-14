@@ -179,7 +179,7 @@ def read_snapshot(snap_path):
 
 
 def diff_source(snap_dir, sid, current, seed, pack_name, diff, totals,
-                cap=True):
+                warnings, cap=True):
     """Snapshot + diff one source, mirroring tracker semantics."""
     snap_path = snap_dir / f"{sid}.json"
     old, corrupt = read_snapshot(snap_path)
@@ -229,6 +229,9 @@ def diff_source(snap_dir, sid, current, seed, pack_name, diff, totals,
             "source": sid, "pack": pack_name,
             "error": f"snapshot write failed: {e}"[:200]})
         totals.pop(sid, None)
+    if sid in totals and tracker.count_dropped(len(old), len(current)):
+        warnings.append({"source": sid, "pack": pack_name,
+                         "previous": len(old), "current": len(current)})
 
 
 def _fetch_feed(f):
@@ -302,6 +305,7 @@ def _run(args, pack, pack_dir, pack_name, state, only):
     snap_dir.mkdir(parents=True, exist_ok=True)
     diff = {"new": [], "changed": [], "removed": [], "errors": []}
     totals = {}
+    count_warnings = []
     wake_ids = ({f["id"] for f in pack.get("feeds", []) if f.get("wake")}
                 | {c["id"] for c in pack.get("communities", [])
                    if c.get("wake")}
@@ -345,7 +349,7 @@ def _run(args, pack, pack_dir, pack_name, state, only):
             # tracker's curated lists
             cap = src.get("tier") != "curated"
         diff_source(snap_dir, sid, current, args.seed, pack_name,
-                    diff, totals, cap=cap)
+                    diff, totals, count_warnings, cap=cap)
 
     try:
         tracker.write_json_atomic(state / "last-diff.json", diff)
@@ -358,6 +362,7 @@ def _run(args, pack, pack_dir, pack_name, state, only):
         "sources_ok": len(totals),
         "sources_failed": [e["source"] for e in diff["errors"]],
         "items_per_source": totals,
+        "count_warnings": count_warnings,
         "new_count": len(diff["new"]),
         "changed_count": len(diff["changed"]),
         "removed_count": len(diff["removed"]),

@@ -21,6 +21,10 @@ Design notes (learned in production):
 - An empty parse counts as a failure, never as "everything was
   removed": the previous snapshot is kept, so a source that changes
   its format cannot burn the baseline or fire a false wake.
+- A non-empty parse can still be a degraded parse: when a source's
+  item count collapses against its previous snapshot, the summary's
+  "count_warnings" names it. A health signal for the agent, never a
+  wake reason by itself.
 - Responses are capped at 8 MB, snapshots and state files are written
   atomically (temp file plus rename), and sources are fetched in
   parallel so a full run stays fast even when a few sources hang.
@@ -59,6 +63,7 @@ UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
 MAX_FEED_ITEMS = 120  # cap per feed source; curated lists are exempt
 MAX_BYTES = 8 * 1024 * 1024  # refuse absurdly large responses
 FETCH_WORKERS = 6  # sources are fetched and parsed in parallel
+DROP_MIN_PREVIOUS = 10  # smallest baseline a count drop is judged on
 
 # Keyword map from a markdown-list section title to a category.
 SECTION_CATEGORY = [
@@ -287,6 +292,15 @@ def acquire_lock(state):
     return None
 
 
+def count_dropped(previous, current):
+    """Whether a source's yield collapsed against its previous
+    snapshot: fewer than half the items, from a baseline big enough
+    to judge. The empty-parse guard cannot see a degraded parse (the
+    source changed shape and only some entries still extract); this
+    is the signal that catches it."""
+    return previous >= DROP_MIN_PREVIOUS and current * 2 < previous
+
+
 def main():
     ap = argparse.ArgumentParser(description="freebie-tracker puller")
     ap.add_argument("--sources", default=str(BASE / "sources.json"))
@@ -332,6 +346,7 @@ def _run(args, state):
     snap_dir.mkdir(parents=True, exist_ok=True)
 
     diff = {"new": [], "changed": [], "removed": [], "errors": []}
+    count_warnings = []
     totals = {}
     wake_ids = {s["id"] for s in sources if s.get("wake")}
 
@@ -430,7 +445,10 @@ def _run(args, state):
         for key in old:
             if key not in current:
                 diff["removed"].append({"source": sid, "key": key})
-        save_snapshot()
+        if save_snapshot() and count_dropped(len(old), len(current)):
+            count_warnings.append({"source": sid,
+                                   "previous": len(old),
+                                   "current": len(current)})
 
     try:
         write_json_atomic(state / "last-diff.json", diff)
@@ -441,6 +459,7 @@ def _run(args, state):
         "sources_ok": len(totals),
         "sources_failed": [e["source"] for e in diff["errors"]],
         "items_per_source": totals,
+        "count_warnings": count_warnings,
         "new_count": len(diff["new"]),
         "changed_count": len(diff["changed"]),
         "removed_count": len(diff["removed"]),
