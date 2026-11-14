@@ -78,7 +78,9 @@ phrasing exists, say so in GUESSES.md instead of inventing one.
 Registry-shaped entries, same fields and meanings as `sources.json`:
 required `id`, `type` (must be `"feed"`), `format` (any format the
 tracker parses: `rss`, `atom`, `json-list`, `md-table`, `html-list`),
-`url`, `tier` (`wake`, `firehose`, or `curated`), plus the usual
+`url`, `tier` (`wake`, `firehose`, `curated`, or `forum`, the same
+feed-tier vocabulary as `sources.json`, so an entry copied from the
+main registry validates as-is), plus the usual
 optional `name`, `categories`, `wake`, `notes`, `item_url_pattern`,
 `list_key`. The runner pulls these with the tracker's parsers, caps
 non-curated feeds at the tracker's item cap with continuity, and

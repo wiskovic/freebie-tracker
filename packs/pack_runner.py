@@ -41,7 +41,7 @@ sys.path.insert(0, str(ROOT))
 import tracker  # noqa: E402  (fetch, PARSERS, entry, locks, caps)
 
 GROUND_KINDS = ("listing", "site", "directory", "community")
-FEED_TIERS = ("wake", "firehose", "curated")
+FEED_TIERS = ("wake", "firehose", "curated", "forum")
 COMMUNITY_PLATFORMS = ("x", "discord", "telegram", "facebook",
                        "forum", "other")
 
@@ -152,7 +152,7 @@ def watch_entries(ground):
     html = tracker.fetch(url).decode("utf-8", "replace")
     pat = re.compile(ground["watch"]["link_pattern"])
     out = {}
-    rx = re.compile(r'<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>', re.S)
+    rx = re.compile(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', re.S)
     for m in rx.finditer(html):
         link = m.group(1)
         if not pat.search(link):

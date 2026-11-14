@@ -38,6 +38,7 @@ LIST_V1 = (b'<a href="https://disboard.org/server/111">HostOne</a>'
 LIST_V2 = (b'<a href="https://disboard.org/server/111">HostOne</a>'
            b'<a href="https://disboard.org/server/222">HostTwo</a>')
 LIST_REL = b'<a href="/server/333">HostThree</a>'
+LIST_SQ = b"<a href='https://disboard.org/server/444'>HostFour</a>"
 
 
 def base_pack():
@@ -130,6 +131,20 @@ class PackRunnerCase(unittest.TestCase):
         snap = json.loads((self.state / "snapshots"
                            / "fr-list.json").read_text())
         self.assertIn("https://disboard.org/server/333", snap)
+
+    def test_watch_single_quoted_href(self):
+        self.data["list"] = LIST_SQ
+        self.assertEqual(self.run_runner("--seed"), 0)
+        snap = json.loads((self.state / "snapshots"
+                           / "fr-list.json").read_text())
+        self.assertIn("https://disboard.org/server/444", snap)
+
+    def test_forum_tier_feed_is_accepted(self):
+        pack = base_pack()
+        pack["feeds"][0]["tier"] = "forum"
+        self.write_pack(pack)
+        self.assertEqual(self.run_runner("--seed"), 0)
+        self.assertEqual(self.summary()["sources_ok"], 2)
 
     # failure paths
 
