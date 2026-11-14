@@ -26,6 +26,8 @@ The wake rule is the whole economy of the system: an agent run is justified only
 
 `count_warnings` is the degraded-parse signal: it names each source whose item count fell to fewer than half of its previous snapshot, judged only from a baseline of at least 10 items. A warning means the source probably changed shape and only some of its entries still extract, not that its offers died. It never counts toward the wake; the agent inspects a warned source on a later pass and repairs or replaces it if the drop is structural. The pack runner emits the same field in its summary.
 
+Deduplication has two layers, and only one belongs to the puller. Within one source, the puller dedupes by entry link: an item listed twice is one snapshot entry and is reported as new only once. Across sources it deliberately does not merge: the same offer on a deal forum and on the provider's own page arrives as two candidates, because judging them to be the same offer is agent work. The agent dedupes every candidate against two plain files in the deployment's private folder, both inspectable and editable by the owner: the inventory (what the owner already holds, has claimed, or has rejected) and the reported ledger (what the agent already reported). A match against either is dropped silently and never reported twice.
+
 ## Waking the agent, per platform
 
 The puller never wakes anyone by itself. A thin wrapper does, and the wrapper is the only platform-specific piece:

@@ -9,7 +9,7 @@ How an AI agent operates freebie-tracker for its owner. This is the judgment hal
 3. Otherwise read `state/last-diff.json` and triage the new and changed entries by category.
 4. For each promising candidate, verify at the **official provider page** (follow the entry link out to the provider, not the aggregator). Aggregator listings are leads, never proof.
 5. Apply the safety filter below.
-6. Dedupe against the owner's inventory (see `templates/inventory.example.md`). Already owned, already claimed, already rejected: drop silently.
+6. Dedupe against the owner's inventory (see `templates/inventory.example.md`) and your reported ledger. Already owned, already claimed, already rejected, already reported: drop silently. The same offer arriving from two sources is still one candidate; the puller does not merge across sources (the full contract is in `docs/agent-integration.md`).
 7. Run the social leg (below) once per wake.
 8. Report briefly to the owner: per category, only what passed, with the official link, the claim window if there is one, and an honest verdict. If nothing passed, say so in one line, including what was rejected and why, briefly.
 
